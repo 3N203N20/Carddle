@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Draw — Interactive Prototype V5</title>
+<style>
+  :root {
+    --bg: #101116;
+    --panel: #191b24;
+    --panel2: #222532;
+    --text: #f4f0e8;
+    --muted: #a7a9b5;
+    --gold: #e8bd68;
+    --gold2: #9e7536;
+    --line: #353846;
+    --green: #83d6a4;
+    --red: #ff8d91;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at top, #282638 0%, var(--bg) 55%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  button { font: inherit; cursor: pointer; }
+
+ /* Main Container */
+ .app {
+   width: min(100%, 520px);
+   margin: auto;
+   min-height: 100vh;
+   padding: 20px 17px 28px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+ }
+
+ header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  transition: opacity .3s ease;
+}
+.week-pill {
+  color: var(--muted);
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 10px;
+}
+h1 {
+  font-size: clamp(27px, 7vw, 35px);
+  line-height: 1.08;
+  margin: 0 0 9px;
+  letter-spacing: -.04em;
+}
+p { color: var(--muted); line-height: 1.5; margin: 0; }
+
+.screen { display: none; animation: fade .22s ease-out; }
+.screen.active { display: block; }
+@keyframes fade {
+  from { opacity: .45; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.score-panel {
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid #51432d;
+  border-radius: 19px;
+  background: linear-gradient(135deg, #29251f, #1a1b23 75%);
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 750;
+}
+.score {
+  font-size: 56px;
+  font-weight: 850;
+  letter-spacing: -.06em;
+  line-height: 1.12;
+  margin: 7px 0 5px;
+ }
+ .score small { font-size: 15px; color: var(--muted); letter-spacing: 0; font-weight: 600; }
+
+ .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-top: 12px; }
+ .stat { padding: 15px; border: 1px solid var(--line); border-radius: 15px; background: var(--panel); }
+ .stat strong { display: block; margin-top: 6px; font-size: 22px; }
+
+  .primary, .secondary { border-radius: 13px; padding: 14px 17px; font-weight: 800; border: 0; }
+  .primary { background: var(--gold); color: #21190d; box-shadow: 0 5px 0 var(--gold2); transition: transform 0.1s; }
+  .primary:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--gold2); }
+  .primary:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; transform: none; }
+  .secondary { background: #2a2c37; color: var(--text); border: 1px solid #424553; }
+  .wide { width: 100%; margin-top: 18px; }
+
+ .section-head { display: flex; justify-content: space-between; align-items: center; margin: 25px 0 11px; }
+ .section-head h2 { font-size: 16px; margin: 0; }
+ .tiny-link { background: none; border: 0; color: var(--gold); font-size: 12px; }
+ .notice { margin-top: 14px; padding: 12px 13px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+ .nav { display: flex; gap: 8px; margin-top: 24px; transition: opacity .3s ease; }
+ .nav button { flex: 1; border: 1px solid var(--line); border-radius: 12px; background: #171921; color: var(--muted); padding: 11px 8px; font-size: 12px; }
+ .nav button.active { border-color: var(--gold2); color: var(--gold); background: #27231d; }
+
+ /* 3D Carousel Swiping Screen */
+ #swipingScreen {
+   position: fixed; inset: 0; z-index: 100;
+   background: radial-gradient(ellipse at center, #282638 0%, #101116 70%);
+   display: none; flex-direction: column; justify-content: center; align-items: center;
+   padding: 20px; overflow: hidden;
+   user-select: none; -webkit-user-select: none; touch-action: none;
+ }
+ #swipingScreen.active { display: flex; }
+
+ .swipe-track-container {
+   position: relative; width: 100%; height: 280px; display: flex; align-items: center; justify-content: center;
+ }
+
+ .swipe-card {
+   position: absolute;
+   width: clamp(90px, 28vw, 130px);
+   height: clamp(140px, 44vw, 200px);
+   border-radius: 12px;
+   border: 2px solid #8d754b;
+   background: linear-gradient(145deg, #34394c, #1d202d 55%, #353047);
+   color: var(--gold);
+   box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+   display: flex; flex-direction: column; align-items: center; justify-content: center;
+   cursor: pointer;
+   transition: filter .2s ease;
+ }
+ .swipe-card::before { content: ""; position: absolute; inset: 6px; border: 1px solid #a78b56a8; border-radius: 8px; pointer-events: none; }
+ .swipe-card .back-mark { display: grid; place-items: center; font-size: 32px; text-shadow: 0 0 18px #e8bd6855; }
+ .swipe-card .back-mark span { border: 1px solid #b89a63; border-radius: 50%; width: 48px; height: 48px; display: grid; place-items: center; }
+
+ .swipe-card.selected-glow {
+   border-color: #fff;
+   box-shadow: 0 0 25px 5px rgba(232, 189, 104, 0.7), 0 15px 30px rgba(0,0,0,0.8);
+   animation: pulseGlow 1.5s infinite alternate;
+ }
+ @keyframes pulseGlow {
+   from { border-color: #ffe0a0; box-shadow: 0 0 15px 2px rgba(232, 189, 104, 0.5); }
+   to { border-color: #fff; box-shadow: 0 0 30px 8px rgba(232, 189, 104, 0.9); }
+ }
+
+  .swipe-hint {
+    position: absolute; bottom: 35px; color: var(--muted); font-size: 13px; text-align: center; letter-spacing: 0.05em; pointer-events: none;
+  }
+
+ /* Choosing Screen Layout */
+ #choosingScreen { display: none; }
+ #choosingScreen.active { display: block; }
+
+ .draw-top { display: flex; align-items: center; gap: 12px; margin-bottom: 23px; }
+ .back { border: 1px solid var(--line); background: var(--panel); color: var(--text); width: 39px; height: 39px; border-radius: 12px; font-size: 20px; }
+ .draw-top h1 { font-size: 25px; margin: 0; }
+ .draw-top p { font-size: 12px; }
+
+  .chosen-card-display {
+    width: 150px; height: 220px; margin: 20px auto; border-radius: 14px;
+    border: 2px solid #ffe0a0; background: linear-gradient(145deg, #4b3c26, #24212a);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #ffe2a1;
+  }
+  .chosen-card-display .symbol { font-size: 40px; }
+  .chosen-card-display .rarity { font-size: 9px; letter-spacing: .12em; color: #eacb8a; }
+  .chosen-card-display .name { font-size: 13px; font-weight: 850; text-align: center; padding: 0 8px; }
+  .chosen-card-display .range-badge { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); display: none; margin-top: 4px; }
+  .chosen-card-display .points { font-size: 22px; font-weight: 850; font-family: monospace; letter-spacing: -0.02em; margin-top: 4px; }
+  .chosen-card-display .points.rolling { color: #fff; text-shadow: 0 0 10px rgba(232, 189, 104, 0.8); }
+
+ .result { margin-top: 20px; border: 1px solid #5b4b32; border-radius: 16px; padding: 20px; background: #242119; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(10px); }
+ .result.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+ .result h2 { margin: 5px 0 7px; font-size: 23px; }
+ .effect { font-size: 16px; color: var(--gold); font-weight: 800; }
+ .score-change { font-size: 13px; margin-top: 8px; color: var(--muted); }
+
+ .achievement { display: flex; gap: 11px; align-items: center; padding: 13px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel); margin-top: 9px; }
+ .achievement .medal { width: 39px; height: 39px; display: grid; place-items: center; background: #302a20; border-radius: 11px; font-size: 19px; }
+ .achievement strong { display: block; font-size: 13px; }
+ .achievement span { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+ .achievement.locked { opacity: .45; }
+ .history-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+ .history-row:last-child { border-bottom: 0; }
+ .empty { text-align: center; padding: 25px 12px; color: var(--muted); font-size: 13px; }
+
+ /* Toast Alert */
+ .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); padding: 11px 15px; border-radius: 12px; background: #f4f0e8; color: #181818; font-size: 12px; font-weight: 750; box-shadow: 0 8px 30px #0008; display: none; max-width: 90vw; z-index: 1000; }
+ .toast.show { display: block; }
+
+ /* Modal Dialog for custom reset confirmation */
+ .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1100; padding: 20px; }
+ .modal-overlay.active { display: flex; }
+ .modal-box { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 20px; max-width: 360px; width: 100%; text-align: center; }
+ .modal-box h3 { margin: 0 0 10px; font-size: 18px; }
+ .modal-box p { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+ .modal-actions { display: flex; gap: 10px; }
+ .modal-actions button { flex: 1; }
+
+  /* Draw calendar tracker */
+  .tracker-trigger { width: 100%; text-align: left; color: var(--text); font: inherit; cursor: pointer; position: relative; }
+  .tracker-trigger strong { font-size: 25px; }
+  .tracker-open-hint { display: block; margin-top: 7px; color: var(--gold); font-size: 11px; }
+  .tracker-screen { touch-action: pan-y; }
+  .tracker-header { margin-bottom: 16px; }
+  .tracker-page-indicator { display: flex; align-items: center; gap: 6px; margin: 0 0 22px; }
+  .page-dot { width: 7px; height: 7px; border-radius: 50%; background: #565968; }
+  .page-dot.active { width: 20px; border-radius: 8px; background: var(--gold); }
+  .tracker-swipe-hint { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .tracker-view-title { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 17px; }
+  .tracker-view-title h2, .month-navigation h2 { margin: 5px 0 0; font-size: 22px; }
+  .tracker-count { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .weekly-calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .calendar-day { min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 10px 2px; text-align: center; background: var(--panel); }
+  .calendar-day .day-name { display: block; font-size: 10px; color: var(--muted); margin-bottom: 9px; }
+  .calendar-day .day-number { display: block; font-size: 16px; font-weight: 800; }
+  .calendar-day .day-status { display: block; font-size: 9px; margin-top: 7px; color: var(--muted); }
+  .calendar-day.drawn { background: #183b2b; border-color: #367c55; }
+  .calendar-day.missed { background: #4a2025; border-color: #a94750; }
+  .calendar-day.missed .day-status { color: #ff9ba3; }
+  .calendar-day.drawn .day-status { color: var(--green); }
+  .calendar-day.today { outline: 3px solid var(--gold); outline-offset: 1px; border-color: var(--gold); background: #493d18; opacity: 1; box-shadow: 0 0 0 2px rgba(255, 211, 105, .18); position: relative; z-index: 1; }
+  .calendar-day.drawn.today { background: #1c6842; border-color: var(--gold); }
+  .calendar-day.today .day-number { color: #fff0b0; }
+  .calendar-day.today .day-status { color: #fff0b0; font-weight: 800; }
+  .month-navigation { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px auto; align-items: center; gap: 8px; margin-bottom: 17px; }
+  .month-navigation h2 { text-align: center; font-size: 18px; }
+  .month-arrow { height: 40px; width: 40px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font-size: 24px; }
+  .month-today-btn { height: 40px; padding: 0 10px; border-radius: 12px; border: 1px solid var(--gold2); background: #27231d; color: var(--gold); font-size: 11px; font-weight: 750; }
+  .monthly-calendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+  .monthly-calendar .weekday-label { text-align: center; color: var(--muted); font-size: 10px; padding: 4px 0 7px; }
+  .monthly-calendar .calendar-day { min-height: 58px; padding: 7px 1px 5px; border-radius: 9px; }
+  .monthly-calendar .calendar-day .day-name { display: none; }
+  .monthly-calendar .calendar-day .day-number { font-size: 13px; }
+  .monthly-calendar .calendar-day .day-status { font-size: 8px; margin-top: 4px; }
+  .monthly-calendar .calendar-day.empty-day { visibility: hidden; }
+  .tracker-legend { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 17px; font-size: 11px; color: var(--muted); }
+  .tracker-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .legend-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+  .legend-dot.drawn { background: var(--green); }
+  .legend-dot.missed { background: var(--red); }
+  .legend-dot.neutral { background: #626575; }
+  .tracker-notice { margin-top: 18px; }
+  @media (max-width: 370px) {
+    .calendar-day { padding-left: 0; padding-right: 0; }
+    .month-navigation { grid-template-columns: 34px minmax(0, 1fr) 34px auto; gap: 5px; }
+    .month-arrow { width: 34px; height: 36px; }
+    .month-today-btn { padding: 0 7px; font-size: 10px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important} }
+</style>
+</head>
+<body>
+<div class="app">
+  <div>
+   <header id="mainHeader">
+     <div class="brand" style="font-size:13px; letter-spacing:.18em; font-weight:800; color:var(--gold);">DAILY DRAW</div>
+     <div class="week-pill" id="weekLabel">WEEK 1</div>
+   </header>
+
+  <main>
+   <!-- Home Screen -->
+   <section class="screen active" id="homeScreen">
+    <div class="eyebrow" id="dayLabel">YOUR WEEKLY RUN</div>
+    <h1>One card can<br>change everything.</h1>
+    <p>Draw once a day. Build your score. See how your week ends.</p>
+
+     <div class="score-panel">
+      <div class="eyebrow">CURRENT WEEKLY SCORE</div>
+      <div class="score" id="weeklyScore">100 <small>pts</small></div>
+      <p id="scoreCaption">Your week starts here. Make each draw count.</p>
+
+     </div>
+
+      <div class="stats">
+        <div class="stat"><div class="eyebrow">LIFETIME TOTAL</div><strong id="lifetimeScore">0 pts</strong></div>
+
+     </div>
+
+
+     <div class="achievement" id="firstAchievement">
+
+      <span id="firstStatus" style="margin-left:auto">0/1</span>
+     </div>
+
+     <div class="section-head"><h2>How it works</h2></div>
+     <div class="notice">Start each week at 100 points. You get one draw per calendar day. At the end of the week, your final weekly score is added to your lifetime total. Missed days don't carry over.</div>
+    </section>
+
+    <!-- Weekly / Monthly Draw Calendar -->
+    <section class="screen tracker-screen" id="trackerScreen" aria-label="Draw calendar">
+      <div class="draw-top tracker-header">
+        <button class="back" id="trackerBackBtn" aria-label="Back to home">‹</button>
+        <div><h1>Draw Calendar</h1><p id="trackerSubtitle">Your current week</p></div>
+      </div>
+      <div class="tracker-page-indicator"><span id="weeklyPageDot" class="page-dot active"></span><span id="monthlyPageDot" class="page-dot"></span><span class="tracker-swipe-hint">Swipe left or right to switch views</span></div>
+      <div id="weeklyTrackerView" class="tracker-view">
+        <div class="tracker-view-title"><div><div class="eyebrow">WEEKLY TRACKER</div><h2 id="weeklyTrackerTitle">This Week</h2></div><span class="tracker-count" id="weeklyTrackerCount">0 / 7 days</span></div>
+        <div class="weekly-calendar" id="weeklyCalendar" aria-label="This week's draw status"></div>
+        <div class="tracker-legend"><span><i class="legend-dot drawn"></i> Completed</span><span><i class="legend-dot missed"></i> Missed</span><span><i class="legend-dot neutral"></i> Other days</span></div>
+      </div>
+      <div id="monthlyTrackerView" class="tracker-view" hidden>
+        <div class="month-navigation">
+          <button class="month-arrow" id="previousMonthBtn" aria-label="Previous month">‹</button>
+          <h2 id="monthTitle">Month Year</h2>
+          <button class="month-arrow" id="nextMonthBtn" aria-label="Next month">›</button>
+          <button class="month-today-btn" id="currentMonthBtn">This month</button>
+        </div>
+        <div class="monthly-calendar" id="monthlyCalendar" aria-label="Monthly draw status"></div>
+        <div class="tracker-legend"><span><i class="legend-dot drawn"></i> Completed</span><span><i class="legend-dot missed"></i> Missed</span><span><i class="legend-dot neutral"></i> Other days</span></div>
+      </div>
+      <div class="notice tracker-notice">Green = completed draw. Red = missed days of THIS WEEK + PAST REDS. Gray = others (future days or days before you started).</div>
+    </section>
+
+   <!-- 3D Carousel Swiping Screen -->
+   <section class="screen" id="swipingScreen">
+     <div class="swipe-track-container" id="swipeTrackContainer"></div>
+     <div class="swipe-hint" id="swipeHint">Swipe to spin · Click once to select · Click again to confirm</div>
+   </section>
+
+   <!-- Choosing / Result Screen -->
+   <section class="screen" id="choosingScreen">
+    <div class="draw-top">
+      <button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button>
+      <div><h1 id="resultTitleText">Today's Result</h1><p id="drawSubtitle">Card revealed successfully</p></div>
+    </div>
+
+     <div class="chosen-card-display" id="chosenCardDisplay">
+
+      <div class="rarity" id="resRarity">COMMON</div>
+      <div class="name" id="resCardName">Lucky Find</div>
+      <div class="range-badge" id="resCardRange">Range: +15 pts</div>
+      <div class="points" id="resCardPoints">+15 pts</div>
+     </div>
+
+     <div class="result" id="resultPanel">
+      <div class="eyebrow">EFFECT APPLIED</div>
+      <h2 id="resultName">Lucky Find</h2>
+      <div class="effect" id="resultEffect">+15 points</div>
+      <div class="score-change" id="resultDetails">Your weekly score changed.</div>
+
+     <button class="primary wide" id="finishDrawBtn" data-screen="homeScreen">Back to home</button>
+    </div>
+   </section>
+
+   <!-- Achievements Screen -->
+   <section class="screen" id="achievementsScreen">
+    <div class="draw-top">
+      <button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button>
+      <div><h1>Achievements</h1><p>Small milestones from your draws.</p></div>
+    </div>
+    <div id="achievementList"></div>
+   </section>
+
+    <!-- History Screen -->
+    <section class="screen" id="historyScreen">
+      <div class="draw-top">
+       <button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button>
+       <div><h1>Draw history</h1><p>Your recent cards and weekly results.</p></div>
+      </div>
+      <div class="stat"><div class="eyebrow">LIFETIME TOTAL</div><strong id="historyLifetime">0 pts</strong></div>
+      <div id="historyList" style="margin-top:15px"></div>
+      <button class="secondary wide" id="resetBtn">Reset prototype data</button>
+      <p style="font-size:11px;margin-top:10px">Reset only affects this browser on this device.</p>
+    </section>
+   </main>
+  </div>
+
+ <nav class="nav" id="mainNav" aria-label="Main navigation">
+
+  <button data-screen="historyScreen">◷ &nbsp; History</button>
+
+ </nav>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Modal Dialog -->
+<div class="modal-overlay" id="confirmModal">
+ <div class="modal-box">
+   <h3>Reset Prototype Data?</h3>
+   <p>Are you sure you want to reset all scores, draw history, and achievements?</p>
+
+  <div class="modal-actions">
+    <button class="secondary" id="modalCancelBtn">Cancel</button>
+    <button class="primary" id="modalConfirmBtn">Reset</button>
+  </div>
+ </div>
+</div>
+
+<script>
+(() => {
+  const START_SCORE = 100;
+  const STORAGE_KEY = "dailyDrawPrototype_v5";
+
+ // Massive 86 Card Deck defined by User
+ const rawCatalog = {
+   COMMON: { weight: 32, cards: [
+     { name: "Loose Change", symbol: "◈", isRandom: false, value: 1 },
+     { name: "Spare Coins", symbol: "◈", isRandom: false, value: 2 },
+     { name: "Pocket Money", symbol: "◈", isRandom: false, value: 3 },
+     { name: "Quick Bonus", symbol: "◈", isRandom: false, value: 4 },
+     { name: "Street Find", symbol: "◈", isRandom: false, value: 5 },
+     { name: "Small Loss", symbol: "▤", isRandom: false, value: -1 },
+     { name: "Minor Setback", symbol: "▤", isRandom: false, value: -2 },
+     { name: "Lost Coins", symbol: "▤", isRandom: false, value: -3 },
+     { name: "Unexpected Fee", symbol: "▤", isRandom: false, value: -4 },
+     { name: "Bad Break", symbol: "▤", isRandom: false, value: -5 }
+   ]},
+   UNCOMMON: { weight: 16, cards: [
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ]},
+   RARE: { weight: 8, cards: [
+
+
+
+
+
+     { name: "Sudden Debt", symbol: "☄", isRandom: false, value: -20 },
+     { name: "Financial Blow", symbol: "☄", isRandom: false, value: -25 },
+     { name: "Costly Disaster", symbol: "☄", isRandom: false, value: -30 },
+     { name: "Huge Expense", symbol: "☄", isRandom: false, value: -35 },
+     { name: "Unexpected Setback", symbol: "☄", isRandom: false, value: -40 },
+
+
+
+
+]},
+EPIC: { weight: 4, cards: [
+  { name: "Golden Reward", symbol: "◇", isRandom: false, value: 45 },
+  { name: "Jackpot", symbol: "◇", isRandom: false, value: 50 },
+  { name: "Treasure Trove", symbol: "◇", isRandom: false, value: 60 },
+  { name: "Royal Payout", symbol: "◇", isRandom: false, value: 65 },
+  { name: "Epic Fortune", symbol: "◇", isRandom: false, value: 75 },
+
+
+
+
+
+
+
+
+
+
+]},
+LEGENDARY: { weight: 2, cards: [
+  { name: "King's Ransom", symbol: "★", isRandom: false, value: 80 },
+  { name: "Royal Fortune", symbol: "★", isRandom: false, value: 95 },
+  { name: "Crown's Bounty", symbol: "★", isRandom: false, value: 110 },
+  { name: "Sovereign Reward", symbol: "★", isRandom: false, value: 130 },
+  { name: "Imperial Treasure", symbol: "★", isRandom: false, value: 150 },
+
+
+
+
+
+
+
+
+
+
+
+   ]},
+   GOD: { weight: 1, cards: [
+
+
+
+
+
+     { name: "Divine Wrath", symbol: "☄", isRandom: false, value: -160 },
+     { name: "Celestial Calamity", symbol: "☄", isRandom: false, value: -190 },
+     { name: "Heaven's Judgment", symbol: "☄", isRandom: false, value: -220 },
+     { name: "World's Ruin", symbol: "☄", isRandom: false, value: -260 },
+     { name: "Catastrophe", symbol: "☄", isRandom: false, value: -300 },
+
+
+
+
+
+
+
+
+   ]},
+   NULL: { weight: 12, cards: [
+     { name: "Null Design 1", symbol: "○", isRandom: false, value: 0 },
+     { name: "Null Design 2", symbol: "◌", isRandom: false, value: 0 },
+     { name: "Null Design 3", symbol: "◎", isRandom: false, value: 0 },
+
+
+   ]}
+ };
+
+ // Logic to draw a weighted card
+ function drawCard() {
+   const totalWeight = Object.values(rawCatalog).reduce((sum, category) => sum + category.weight, 0);
+   let randomWeight = Math.random() * totalWeight;
+   let selectedRarity = "COMMON";
+
+  for (const [rarity, data] of Object.entries(rawCatalog)) {
+   if (randomWeight < data.weight) {
+     selectedRarity = rarity;
+     break;
+         }
+         randomWeight -= data.weight;
+     }
+
+     const categoryCards = rawCatalog[selectedRarity].cards;
+     const cardDef = categoryCards[Math.floor(Math.random() * categoryCards.length)];
+     const chosenCard = { ...cardDef, rarity: selectedRarity };
+
+   if (chosenCard.isRandom) {
+     chosenCard.finalValue = Math.floor(Math.random() * (chosenCard.max - chosenCard.min + 1)) + chosenCard.min;
+   } else {
+     chosenCard.finalValue = chosenCard.value;
+   }
+
+     return chosenCard;
+ }
+
+ // Helper to find original card definition by name
+ function findCardByName(name) {
+   for (const [rarity, cat] of Object.entries(rawCatalog)) {
+     const card = cat.cards.find(c => c.name === name);
+     if (card) return { ...card, rarity };
+   }
+   return null;
+ }
+
+  function getJST() { return new Date(Date.now() + 9 * 3600000); }
+  const todayKey = () => {
+    const d = getJST();
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
+  };
+  const getWeekKey = () => {
+    const d = getJST();
+    d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+    return `${d.getUTCFullYear()}-W-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
+  };
+
+ const initialState = () => ({
+  weekKey: getWeekKey(),
+  weekNumber: 1,
+  weeklyScore: START_SCORE,
+  lifetimeTotal: 0,
+  drawDates: [],
+  history: [],
+  totalDraws: 0,
+  unlocked: []
+});
+
+let state;
+try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || initialState(); }
+catch { state = initialState(); }
+
+if (!Array.isArray(state.drawDates)) state.drawDates = [];
+if (!Array.isArray(state.history)) state.history = [];
+if (!Array.isArray(state.unlocked)) state.unlocked = [];
+if (!state.weekKey) state.weekKey = getWeekKey();
+if (!Number.isFinite(state.weekNumber)) state.weekNumber = 1;
+if (!Number.isFinite(state.weeklyScore)) state.weeklyScore = START_SCORE;
+if (!Number.isFinite(state.lifetimeTotal)) state.lifetimeTotal = 0;
+
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => t.classList.remove("show"), 2300);
+}
+
+function hasDrawnToday() { return state.drawDates.includes(todayKey()); }
+
+function ensureWeek() {
+  const wk = getWeekKey();
+  if (wk !== state.weekKey) {
+    state.lifetimeTotal += state.weeklyScore;
+    state.weeklyScore = START_SCORE;
+    state.weekKey = wk;
+    state.weekNumber += 1;
+    state.drawDates = [];
+    save();
+  }
+}
+
+ function fmt(n) { return Math.round(n).toLocaleString(); }
+
+ function renderHome() {
+   ensureWeek();
+   const jstDay = getJST().getUTCDay() + 1;
+   document.getElementById("weekLabel").textContent = `WEEK ${state.weekNumber}`;
+   document.getElementById("dayLabel").textContent = `WEEK ${state.weekNumber} · DAY ${jstDay} (JST)`;
+   document.getElementById("weeklyScore").innerHTML = `${fmt(state.weeklyScore)} <small>pts</small>`;
+   document.getElementById("lifetimeScore").textContent = `${fmt(state.lifetimeTotal)} pts`;
+   document.getElementById("drawCount").textContent = `${state.drawDates.length}`;
+   renderWeeklyTracker();
+   renderMonthlyTracker();
+   document.getElementById("historyLifetime").textContent = `${fmt(state.lifetimeTotal)} pts`;
+
+  const drawn = hasDrawnToday();
+  const drawBtn = document.getElementById("goDrawBtn");
+  drawBtn.disabled = false;
+
+  document.getElementById("scoreCaption").textContent = drawn ? "You have drawn today.\nReview your result." : "Your week starts here. Make each draw count.";
+  document.getElementById("firstStatus").textContent = state.totalDraws > 0 ? "1/1" : "0/1";
+
+     renderAchievements();
+     renderHistory();
+ }
+
+ function go(screenId) {
+   document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
+   document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.screen === screenId));
+   if (screenId === "homeScreen") renderHome();
+   if (screenId === "swipingScreen") initSwipingScreen();
+   if (screenId === "trackerScreen") renderTrackers();
+   if (screenId === "historyScreen") renderHistory();
+   if (screenId === "achievementsScreen") renderAchievements();
+   window.scrollTo({top: 0, behavior: "smooth"});
+ }
+
+
+ /* Weekly and monthly draw calendar trackers */
+ const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+ const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+ let trackerView = "weekly";
+ let trackerMonth = (() => { const d = getJST(); return { year: d.getUTCFullYear(), month: d.getUTCMonth() }; })();
+ let trackerPointerStart = null;
+
+ function jstDateParts(dateKey) {
+   const parts = dateKey.split("-").map(Number);
+   return { year: parts[0], month: parts[1] - 1, day: parts[2] };
+ }
+ function dateKeyFromParts(year, month, day) {
+   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+ }
+ function getWeekStartParts() {
+   const now = getJST();
+   const day = now.getUTCDay();
+   const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - day));
+   return { year: start.getUTCFullYear(), month: start.getUTCMonth(), day: start.getUTCDate() };
+ }
+ function getRecordedDrawDates() {
+   // Use both the current week's draw-date list and the full history. This keeps
+   // calendar indicators reliable even if one of the stored lists is stale.
+   const dates = new Set(Array.isArray(state.drawDates) ? state.drawDates : []);
+   for (const entry of (Array.isArray(state.history) ? state.history : [])) {
+     if (entry && typeof entry.date === "string") dates.add(entry.date.slice(0, 10));
+   }
+   return dates;
+ }
+
+ function makeCalendarDay(dateKey, dayNumber, dayName, drawnDates, today, view = 'weekly') {
+  const cell = document.createElement('div');
+  const isDrawn = drawnDates.has(dateKey);
+  const currentWeekStart = dateKeyFromParts(getWeekStartParts().year, getWeekStartParts().month, getWeekStartParts().day);
+  let thresholdDate = currentWeekStart;
+  if (drawnDates.size > 0) {
+    const firstDraw = Array.from(drawnDates).sort()[0];
+    const fdParts = jstDateParts(firstDraw);
+    const fdDate = new Date(Date.UTC(fdParts.year, fdParts.month, fdParts.day));
+    fdDate.setUTCDate(fdDate.getUTCDate() - fdDate.getUTCDay());
+    const firstActiveWeekStart = dateKeyFromParts(fdDate.getUTCFullYear(), fdDate.getUTCMonth(), fdDate.getUTCDate());
+    if (firstActiveWeekStart < thresholdDate) {
+      thresholdDate = firstActiveWeekStart;
+    }
+  }
+  const isPast = dateKey < today;
+  const isMissed = !isDrawn && isPast && dateKey >= thresholdDate;
+  cell.className = `calendar-day${isDrawn ? ' drawn' : isMissed ? ' missed' : ''}${dateKey === today ? ' today' : ''}`;
+  if (dateKey === today) cell.setAttribute('aria-current', 'date');
+  const name = document.createElement('span'); name.className = 'day-name'; name.textContent = dayName;
+  const number = document.createElement('span'); number.className = 'day-number'; number.textContent = dayNumber;
+  const label = document.createElement('span'); label.className = 'day-status';
+  label.textContent = isDrawn ? 'Completed' : isMissed ? 'Missed' : '—';
+  cell.append(name, number, label);
+  const accessibleStatus = isDrawn ? 'completed draw' : isMissed ? 'missed' : (dateKey === today ? 'today, not drawn' : 'no draw status');
+  cell.setAttribute('aria-label', `${dayName ? dayName + ' ' : ''}${dateKey}: ${accessibleStatus}`);
+  return cell;
+}
+
+ function renderWeeklyTracker() {
+   const calendar = document.getElementById("weeklyCalendar");
+   if (!calendar) return;
+   calendar.innerHTML = "";
+   const start = getWeekStartParts();
+   const drawnDates = getRecordedDrawDates();
+   const today = todayKey();
+   let count = 0;
+   for (let i = 0; i < 7; i++) {
+     const date = new Date(Date.UTC(start.year, start.month, start.day + i));
+     const key = dateKeyFromParts(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+     if (drawnDates.has(key)) count++;
+     calendar.appendChild(makeCalendarDay(key, date.getUTCDate(), WEEKDAY_NAMES[i], drawnDates, today));
+   }
+   document.getElementById("weeklyTrackerTitle").textContent = `Week of ${start.day} ${MONTH_NAMES[start.month]}`;
+   document.getElementById("weeklyTrackerCount").textContent = `${count} / 7 days drawn`;
+ }
+ function renderMonthlyTracker() {
+   const calendar = document.getElementById("monthlyCalendar");
+   if (!calendar) return;
+   calendar.innerHTML = "";
+   const { year, month } = trackerMonth;
+   document.getElementById("monthTitle").textContent = `${MONTH_NAMES[month]} ${year}`;
+   WEEKDAY_NAMES.forEach(name => {
+     const label = document.createElement("div"); label.className = "weekday-label"; label.textContent = name;
+     calendar.appendChild(label);
+   });
+   const firstWeekday = new Date(Date.UTC(year, month, 1)).getUTCDay();
+   const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+   for (let i = 0; i < firstWeekday; i++) {
+     const blank = document.createElement("div"); blank.className = "calendar-day empty-day"; blank.setAttribute("aria-hidden", "true"); calendar.appendChild(blank);
+   }
+   const drawnDates = getRecordedDrawDates();
+   const today = todayKey();
+   for (let day = 1; day <= daysInMonth; day++) {
+     const key = dateKeyFromParts(year, month, day);
+     calendar.appendChild(makeCalendarDay(key, day, "", drawnDates, today, "monthly"));
+   }
+ }
+ function renderTrackers() {
+   document.getElementById("weeklyPageDot").classList.toggle("active", trackerView === "weekly");
+   document.getElementById("monthlyPageDot").classList.toggle("active", trackerView === "monthly");
+   document.getElementById("weeklyTrackerView").hidden = trackerView !== "weekly";
+   document.getElementById("monthlyTrackerView").hidden = trackerView !== "monthly";
+   document.getElementById("trackerSubtitle").textContent = trackerView === "weekly" ? "Your current week" : "Your monthly draw history";
+   renderWeeklyTracker();
+   renderMonthlyTracker();
+ }
+ function changeTrackerView(view) { trackerView = view; renderTrackers(); }
+ document.getElementById("openTrackerBtn").addEventListener("click", () => { trackerView = "weekly"; go("trackerScreen"); });
+ document.getElementById("trackerBackBtn").addEventListener("click", () => go("homeScreen"));
+ document.getElementById("previousMonthBtn").addEventListener("click", () => { trackerMonth.month--; if (trackerMonth.month < 0) { trackerMonth.month = 11; trackerMonth.year--; } renderMonthlyTracker(); });
+ document.getElementById("nextMonthBtn").addEventListener("click", () => { trackerMonth.month++; if (trackerMonth.month > 11) { trackerMonth.month = 0; trackerMonth.year++; } renderMonthlyTracker(); });
+ document.getElementById("currentMonthBtn").addEventListener("click", () => { const d = getJST(); trackerMonth = { year: d.getUTCFullYear(), month: d.getUTCMonth() }; renderMonthlyTracker(); });
+ const trackerScreenEl = document.getElementById("trackerScreen");
+ trackerScreenEl.addEventListener("pointerdown", e => {
+   if (e.target.closest("button")) { trackerPointerStart = null; return; }
+   trackerPointerStart = { x: e.clientX, y: e.clientY };
+ });
+ trackerScreenEl.addEventListener("pointerup", e => {
+   if (!trackerPointerStart) return;
+   const dx = e.clientX - trackerPointerStart.x;
+   const dy = e.clientY - trackerPointerStart.y;
+   trackerPointerStart = null;
+   // Either left or right horizontal swipe switches between the only two pages.
+   if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy) * 1.15) return;
+   changeTrackerView(trackerView === "weekly" ? "monthly" : "weekly");
+ });
+ trackerScreenEl.addEventListener("pointercancel", () => { trackerPointerStart = null; });
+
+ /* 3D Carousel Mechanics */
+ const TOTAL_CARDS = 10;
+ let cardPos = 0;
+ let velocity = 0;
+ let isDragging = false;
+
+let dragLastX = 0;
+let dragLastTime = 0;
+let animFrameId = null;
+let selectedIndex = null;
+let isGliding = false;
+let isRevealed = false;
+
+const trackContainer = document.getElementById("swipeTrackContainer");
+const swipeHint = document.getElementById("swipeHint");
+
+function initSwipingScreen() {
+  if (hasDrawnToday()) {
+    replayTodayDraw();
+    return;
+  }
+  isRevealed = false;
+  selectedIndex = null;
+  cardPos = 0;
+  velocity = 0;
+  isGliding = false;
+  buildSwipeCards();
+  updateSwipeDOM();
+  startPhysicsLoop();
+}
+
+function buildSwipeCards() {
+ trackContainer.innerHTML = "";
+ for (let i = 0; i < TOTAL_CARDS; i++) {
+   const card = document.createElement("div");
+   card.className = "swipe-card";
+   card.dataset.index = i;
+
+
+        card.addEventListener("click", () => {
+          if (isDragging || isGliding) return;
+          handleCardClick(i);
+        });
+        trackContainer.appendChild(card);
+    }
+}
+
+function handleCardClick(clickedIndex) {
+ let diff = clickedIndex - cardPos;
+ while (diff > TOTAL_CARDS / 2) diff -= TOTAL_CARDS;
+
+    while (diff < -TOTAL_CARDS / 2) diff += TOTAL_CARDS;
+    const targetPos = cardPos + diff;
+
+    if (selectedIndex === null || Math.abs(cardPos - clickedIndex) > 0.3) {
+      selectedIndex = clickedIndex;
+      swipeHint.textContent = "Selected! Click again to confirm & reveal.";
+      glideTo(targetPos);
+    } else {
+      confirmAndReveal();
+    }
+}
+
+function glideTo(target) {
+ isGliding = true;
+ velocity = 0;
+ const start = cardPos;
+ const distance = target - start;
+ const duration = 400;
+ const startTime = performance.now();
+
+    function step(now) {
+     const elapsed = now - startTime;
+     const progress = Math.min(elapsed / duration, 1);
+     const ease = 1 - Math.pow(1 - progress, 3);
+     cardPos = start + distance * ease;
+     updateSwipeDOM();
+
+     if (progress < 1) {
+       requestAnimationFrame(step);
+     } else {
+       cardPos = ((target % TOTAL_CARDS) + TOTAL_CARDS) % TOTAL_CARDS;
+       isGliding = false;
+       updateSwipeDOM();
+     }
+    }
+    requestAnimationFrame(step);
+}
+
+function updateSwipeDOM() {
+ const cards = trackContainer.querySelectorAll(".swipe-card");
+ const containerWidth = trackContainer.clientWidth || 320;
+ const spacing = Math.min(containerWidth * 0.28, 95);
+
+    cards.forEach((card, i) => {
+
+     let offset = i - cardPos;
+     while (offset < -TOTAL_CARDS / 2) offset += TOTAL_CARDS;
+     while (offset > TOTAL_CARDS / 2) offset -= TOTAL_CARDS;
+
+     const absOffset = Math.abs(offset);
+     const xPos = offset * spacing;
+     const scale = Math.max(0.4, 1 - absOffset * 0.22);
+     const zIndex = 100 - Math.round(absOffset * 10);
+     const opacity = Math.max(0, 1 - absOffset * 0.35);
+
+     card.style.transform = `translate3d(${xPos}px, 0, 0) scale(${scale})`;
+     card.style.zIndex = zIndex;
+     card.style.opacity = opacity;
+     card.style.pointerEvents = absOffset < 1.5 ? "auto" : "none";
+
+      if (selectedIndex === i && Math.abs(offset) < 0.15) {
+        card.classList.add("selected-glow");
+      } else {
+        card.classList.remove("selected-glow");
+      }
+    });
+}
+
+function startPhysicsLoop() {
+ if (animFrameId) cancelAnimationFrame(animFrameId);
+ function loop() {
+   if (!isDragging && !isGliding && !isRevealed) {
+     if (Math.abs(velocity) > 0.001) {
+       cardPos += velocity;
+       velocity *= 0.92;
+       cardPos = (cardPos + TOTAL_CARDS) % TOTAL_CARDS;
+       updateSwipeDOM();
+     } else {
+       const nearest = Math.round(cardPos);
+       let diff = nearest - cardPos;
+       if (Math.abs(diff) > 0.001) {
+         cardPos += diff * 0.2;
+         updateSwipeDOM();
+       }
+     }
+   }
+   animFrameId = requestAnimationFrame(loop);
+ }
+ animFrameId = requestAnimationFrame(loop);
+
+}
+
+const swipingScreen = document.getElementById("swipingScreen");
+
+swipingScreen.addEventListener("pointerdown", (e) => {
+  if (isGliding || isRevealed) return;
+  isDragging = true;
+  dragLastX = e.clientX;
+  dragLastTime = performance.now();
+  velocity = 0;
+});
+
+swipingScreen.addEventListener("pointermove", (e) => {
+ if (!isDragging) return;
+ const now = performance.now();
+ const dx = e.clientX - dragLastX;
+
+    const containerWidth = trackContainer.clientWidth || 320;
+    const spacing = Math.min(containerWidth * 0.28, 95);
+
+    cardPos -= dx / spacing;
+    cardPos = (cardPos + TOTAL_CARDS) % TOTAL_CARDS;
+    updateSwipeDOM();
+
+    if (selectedIndex !== null && Math.abs(cardPos - selectedIndex) > 0.4) {
+      selectedIndex = null;
+      swipeHint.textContent = "Swipe to spin · Click once to select · Click again to confirm";
+    }
+
+  velocity = -(dx / spacing) * 0.4;
+  dragLastX = e.clientX;
+  dragLastTime = now;
+});
+
+const endDrag = () => { isDragging = false; };
+swipingScreen.addEventListener("pointerup", endDrag);
+swipingScreen.addEventListener("pointercancel", endDrag);
+
+let rollAnimId = null;
+
+function confirmAndReveal() {
+ if (isRevealed) return;
+ isRevealed = true;
+ if (animFrameId) cancelAnimationFrame(animFrameId);
+
+     const chosenCard = drawCard();
+     const finalValue = chosenCard.finalValue;
+
+   // Apply outcome immediately to state
+   const before = state.weeklyScore;
+   let effectText = finalValue > 0 ? `+${finalValue} points` : (finalValue < 0 ? `${finalValue} points` : "0 points (Null)");
+
+     state.weeklyScore += finalValue;
+     state.weeklyScore = Math.round(state.weeklyScore);
+     state.drawDates.push(todayKey());
+     state.totalDraws += 1;
+
+     const entry = {
+       date: todayKey(),
+       week: state.weekNumber,
+       name: chosenCard.name,
+       symbol: chosenCard.symbol,
+       rarity: chosenCard.rarity,
+       effect: effectText,
+       before,
+       after: state.weeklyScore
+     };
+     state.history.push(entry);
+     checkAchievements(chosenCard, entry);
+     save();
+
+     document.getElementById("resultTitleText").textContent = "Today's Result";
+     animateCardReveal(chosenCard, entry);
+ }
+
+ function replayTodayDraw() {
+  const entry = state.history.find(h => h.date === todayKey());
+  if (!entry) return;
+
+     const cardDef = findCardByName(entry.name);
+     if (!cardDef) return;
+
+     document.getElementById("resultTitleText").textContent = "Reviewing Today's Draw";
+     animateCardReveal(cardDef, entry);
+ }
+
+ function animateCardReveal(card, entry) {
+
+  if (rollAnimId) cancelAnimationFrame(rollAnimId);
+
+  const finalValue = entry.after - entry.before;
+
+  document.getElementById("resSymbol").textContent = card.symbol;
+  document.getElementById("resRarity").textContent = entry.rarity;
+  document.getElementById("resCardName").textContent = card.name;
+
+  const rangeEl = document.getElementById("resCardRange");
+  const pointsEl = document.getElementById("resCardPoints");
+  const resultPanel = document.getElementById("resultPanel");
+  const finishBtn = document.getElementById("finishDrawBtn");
+
+  resultPanel.classList.remove("show"); // Keep details hidden initially
+  finishBtn.disabled = true;
+
+  // Navigate to choosing screen
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("choosingScreen").classList.add("active");
+
+    if (card.isRandom) {
+      rangeEl.style.display = "block";
+      rangeEl.textContent = `Range: ${card.min > 0 ? '+' : ''}${card.min} to ${card.max > 0 ? '+' : ''}${card.max} pts`;
+
+   // Setup panel text for rolling phase
+   document.getElementById("resultName").textContent = `${card.symbol} ${card.name}`;
+   document.getElementById("resultEffect").textContent = "Rolling...";
+   document.getElementById("resultDetails").textContent = "Determining final outcome...";
+   resultPanel.classList.add("show");
+
+   pointsEl.classList.add("rolling");
+
+   const duration = 1500;
+   const startTime = performance.now();
+   let lastUpdate = 0;
+
+   function animateRoll(now) {
+    const elapsed = now - startTime;
+    if (elapsed < duration) {
+      // Update rapid number roll every ~50ms
+      if (now - lastUpdate > 50) {
+        const tempVal = Math.floor(Math.random() * (card.max - card.min + 1)) + card.min;
+        pointsEl.textContent = tempVal > 0 ? `+${fmt(tempVal)} pts` : `${fmt(tempVal)} pts`;
+
+          lastUpdate = now;
+         }
+         rollAnimId = requestAnimationFrame(animateRoll);
+       } else {
+         pointsEl.classList.remove("rolling");
+         finalizeDrawUI(card, finalValue, entry, pointsEl, resultPanel, finishBtn);
+       }
+       }
+       rollAnimId = requestAnimationFrame(animateRoll);
+     } else {
+       rangeEl.style.display = "none";
+       finalizeDrawUI(card, finalValue, entry, pointsEl, resultPanel, finishBtn);
+     }
+ }
+
+ function finalizeDrawUI(card, finalValue, entry, pointsEl, resultPanel, finishBtn) {
+   pointsEl.textContent = finalValue > 0 ? `+${fmt(finalValue)} pts` : (finalValue < 0 ? `${fmt(finalValue)} pts` : `0 pts`);
+
+ document.getElementById("resultName").textContent = `${card.symbol} ${card.name}`;
+ document.getElementById("resultEffect").textContent = entry.effect;
+ const diff = entry.after - entry.before;
+
+
+     // Reveal everything smoothly after finalizing
+     resultPanel.classList.add("show");
+     finishBtn.disabled = false;
+ }
+
+ function checkAchievements(card, entry) {
+   const unlock = (id) => {
+     if (!state.unlocked.includes(id)) {
+       state.unlocked.push(id);
+       showToast("Achievement unlocked!");
+     }
+   };
+   unlock("first");
+   if (state.drawDates.length >= 3) unlock("three");
+   if (entry.after >= 200) unlock("high");
+   if (card.rarity === "LEGENDARY" || card.rarity === "GOD") unlock("legendary");
+   if (entry.after < 50) unlock("low");
+ }
+
+ /* Achievements */
+ const achievements = [
+
+   { id: "three", icon: "◷", name: "Getting a Habit", desc: "Draw on three different days in one week." },
+
+   { id: "legendary", icon: "★", name: "One in a Million", desc: "Reveal a Legendary or God card." },
+   { id: "low", icon: "☁", name: "Rock Bottom", desc: "Drop below 50 points." }
+ ];
+
+ function renderAchievements() {
+   const list = document.getElementById("achievementList");
+   list.innerHTML = "";
+   achievements.forEach(a => {
+     const unlocked = state.unlocked.includes(a.id);
+     const div = document.createElement("div");
+     div.className = `achievement ${unlocked ? "" : "locked"}`;
+     div.innerHTML = `<div class="medal">${a.icon}</div><div><strong>${a.name}</strong><span>${a.desc}</span></div><span style="margin-left:auto;font-size:11px">${unlocked ? "UNLOCKED" : "LOCKED"}</span>`;
+     list.appendChild(div);
+   });
+ }
+
+ function renderHistory() {
+   const list = document.getElementById("historyList");
+   list.innerHTML = "";
+   document.getElementById("historyLifetime").textContent = `${fmt(state.lifetimeTotal)} pts`;
+   if (!state.history.length) {
+     list.innerHTML = '<div class="empty">No cards drawn yet. Your first reveal will appear here.</div>';
+     return;
+   }
+   [...state.history].reverse().slice(0, 30).forEach(h => {
+     const row = document.createElement("div");
+     row.className = "history-row";
+     const delta = h.after - h.before;
+     row.innerHTML = `<div><strong style="font-size:13px">${h.symbol} ${h.name}</strong><div style="font-size:11px;color:var(--muted);margin-top:4px">${h.date} · Week ${h.week}</div></div><div style="text-align:right"><strong style="font-size:13px;color:${delta>=0?'var(--green)':'var(--red)'}">${delta>=0?'+':''}${fmt(delta)}</strong><div style="font-size:11px;color:var(--muted);margin-top:4px">Score: ${fmt(h.after)}</div></div>`;
+      list.appendChild(row);
+    });
+  }
+
+ /* Robust Event Delegation for screen switching */
+ document.addEventListener("click", (e) => {
+   const screenBtn = e.target.closest("[data-screen]");
+   if (screenBtn) {
+     go(screenBtn.dataset.screen);
+   }
+ });
+
+ /* Specific Click Handlers */
+ document.getElementById("goDrawBtn").addEventListener("click", () => {
+   if (hasDrawnToday()) {
+     replayTodayDraw();
+   } else {
+     go("swipingScreen");
+   }
+ });
+
+ /* Reset Confirmation Modal Logic */
+ const confirmModal = document.getElementById("confirmModal");
+ document.getElementById("resetBtn").addEventListener("click", () => {
+   confirmModal.classList.add("active");
+ });
+ document.getElementById("modalCancelBtn").addEventListener("click", () => {
+   confirmModal.classList.remove("active");
+ });
+ document.getElementById("modalConfirmBtn").addEventListener("click", () => {
+   confirmModal.classList.remove("active");
+   state = initialState();
+   save();
+   renderHome();
+   go("homeScreen");
+   showToast("Prototype data reset.");
+ });
+
+ /* Initial Load */
+ ensureWeek();
+ renderHome();
+ save();
+
+})();
+</script>
+</body>
+</html>
