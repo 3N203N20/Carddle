@@ -278,17 +278,17 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
       <div class="eyebrow">CURRENT WEEKLY SCORE</div>
       <div class="score" id="weeklyScore">100 <small>pts</small></div>
       <p id="scoreCaption">Your week starts here. Make each draw count.</p>
-
+      <button class="primary wide" id="goDrawBtn">Choose today's card →</button>
      </div>
 
       <div class="stats">
         <div class="stat"><div class="eyebrow">LIFETIME TOTAL</div><strong id="lifetimeScore">0 pts</strong></div>
-
+        <button class="stat tracker-trigger" id="openTrackerBtn" type="button" aria-label="Open weekly and monthly draw calendar"><div class="eyebrow">DAYS DRAWN THIS WEEK</div><strong id="drawCount">0</strong><span class="tracker-open-hint">View calendar →</span></button>
      </div>
 
-
+     <div class="section-head"><h2>Achievements</h2><button class="tiny-link" data-screen="achievementsScreen">VIEW ALL →</button></div>
      <div class="achievement" id="firstAchievement">
-
+      <div class="medal">✦</div><div><strong>First Draw</strong><span>Reveal your first card.</span></div>
       <span id="firstStatus" style="margin-left:auto">0/1</span>
      </div>
 
@@ -335,7 +335,7 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
     </div>
 
      <div class="chosen-card-display" id="chosenCardDisplay">
-
+      <div class="symbol" id="resSymbol">✦</div>
       <div class="rarity" id="resRarity">COMMON</div>
       <div class="name" id="resCardName">Lucky Find</div>
       <div class="range-badge" id="resCardRange">Range: +15 pts</div>
@@ -376,9 +376,9 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
   </div>
 
  <nav class="nav" id="mainNav" aria-label="Main navigation">
-
+  <button class="active" data-screen="homeScreen">⌂ &nbsp; Home</button>
   <button data-screen="historyScreen">◷ &nbsp; History</button>
-
+  <button data-screen="achievementsScreen">✦ &nbsp; Achievements</button>
  </nav>
 </div>
 
@@ -417,35 +417,35 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
      { name: "Bad Break", symbol: "▤", isRandom: false, value: -5 }
    ]},
    UNCOMMON: { weight: 16, cards: [
-
-
-
-
-
-
-
-
-
-
-
-
-
+     { name: "Nice Bonus", symbol: "✦", isRandom: false, value: 6 },
+     { name: "Cash Reward", symbol: "✦", isRandom: false, value: 8 },
+     { name: "Solid Gain", symbol: "✦", isRandom: false, value: 10 },
+     { name: "Strong Earnings", symbol: "✦", isRandom: false, value: 13 },
+     { name: "Big Reward", symbol: "✦", isRandom: false, value: 15 },
+     { name: "Unwanted Expense", symbol: "✧", isRandom: false, value: -6 },
+     { name: "Money Trouble", symbol: "✧", isRandom: false, value: -8 },
+     { name: "Costly Mistake", symbol: "✧", isRandom: false, value: -10 },
+     { name: "Heavy Bill", symbol: "✧", isRandom: false, value: -13 },
+     { name: "Major Loss", symbol: "✧", isRandom: false, value: -15 },
+     { name: "Lucky Draw", symbol: "⍟", isRandom: true, min: 6, max: 15 },
+     { name: "Pocket Gamble", symbol: "⍟", isRandom: true, min: 8, max: 12 },
+     { name: "Unlucky Draw", symbol: "⍟", isRandom: true, min: -15, max: -6 }
    ]},
    RARE: { weight: 8, cards: [
-
-
-
-
-
+     { name: "Bonus Payout", symbol: "✹", isRandom: false, value: 20 },
+     { name: "Sudden Payday", symbol: "✹", isRandom: false, value: 25 },
+     { name: "Big Payday", symbol: "✹", isRandom: false, value: 30 },
+     { name: "Treasure Stash", symbol: "✹", isRandom: false, value: 35 },
+     { name: "Unexpected Windfall", symbol: "✹", isRandom: false, value: 40 },
      { name: "Sudden Debt", symbol: "☄", isRandom: false, value: -20 },
      { name: "Financial Blow", symbol: "☄", isRandom: false, value: -25 },
      { name: "Costly Disaster", symbol: "☄", isRandom: false, value: -30 },
      { name: "Huge Expense", symbol: "☄", isRandom: false, value: -35 },
      { name: "Unexpected Setback", symbol: "☄", isRandom: false, value: -40 },
-
-
-
-
+     { name: "Fortune Roll", symbol: "⎈", isRandom: true, min: 16, max: 40 },
+     { name: "Hidden Windfall", symbol: "⎈", isRandom: true, min: 24, max: 35 },
+     { name: "Rough Luck", symbol: "⎈", isRandom: true, min: -40, max: -16 },
+     { name: "Costly Gamble", symbol: "⎈", isRandom: true, min: -30, max: -20 }
 ]},
 EPIC: { weight: 4, cards: [
   { name: "Golden Reward", symbol: "◇", isRandom: false, value: 45 },
@@ -453,16 +453,16 @@ EPIC: { weight: 4, cards: [
   { name: "Treasure Trove", symbol: "◇", isRandom: false, value: 60 },
   { name: "Royal Payout", symbol: "◇", isRandom: false, value: 65 },
   { name: "Epic Fortune", symbol: "◇", isRandom: false, value: 75 },
-
-
-
-
-
-
-
-
-
-
+  { name: "Golden Loss", symbol: "⟡", isRandom: false, value: -45 },
+  { name: "Major Setback", symbol: "⟡", isRandom: false, value: -50 },
+  { name: "Wealth Drained", symbol: "⟡", isRandom: false, value: -60 },
+  { name: "Royal Debt", symbol: "⟡", isRandom: false, value: -65 },
+  { name: "Epic Misfortune", symbol: "⟡", isRandom: false, value: -75 },
+  { name: "Treasure Roll", symbol: "⧫", isRandom: true, min: 41, max: 75 },
+  { name: "Golden Chance", symbol: "⧫", isRandom: true, min: 41, max: 55 },
+  { name: "Treasure Surge", symbol: "⧫", isRandom: true, min: 58, max: 70 },
+  { name: "Financial Roulette", symbol: "⧫", isRandom: true, min: -75, max: -41 },
+  { name: "Heavy Gamble", symbol: "⧫", isRandom: true, min: -75, max: -60 }
 ]},
 LEGENDARY: { weight: 2, cards: [
   { name: "King's Ransom", symbol: "★", isRandom: false, value: 80 },
@@ -470,44 +470,44 @@ LEGENDARY: { weight: 2, cards: [
   { name: "Crown's Bounty", symbol: "★", isRandom: false, value: 110 },
   { name: "Sovereign Reward", symbol: "★", isRandom: false, value: 130 },
   { name: "Imperial Treasure", symbol: "★", isRandom: false, value: 150 },
-
-
-
-
-
-
-
-
-
-
-
+  { name: "King's Debt", symbol: "✫", isRandom: false, value: -80 },
+  { name: "Royal Ruin", symbol: "✫", isRandom: false, value: -95 },
+  { name: "Crown's Burden", symbol: "✫", isRandom: false, value: -110 },
+  { name: "Sovereign Debt", symbol: "✫", isRandom: false, value: -130 },
+  { name: "Imperial Downfall", symbol: "✫", isRandom: false, value: -150 },
+  { name: "Royal Gamble", symbol: "✵", isRandom: true, min: 76, max: 150 },
+  { name: "King's Fortune", symbol: "✵", isRandom: true, min: 76, max: 105 },
+  { name: "Emperor's Roll", symbol: "✵", isRandom: true, min: 115, max: 145 },
+     { name: "Royal Risk", symbol: "✵", isRandom: true, min: -150, max: -76 },
+     { name: "Crown's Wildcard", symbol: "✵", isRandom: true, min: -115, max: -85 },
+     { name: "Imperial Twist of Fate", symbol: "✵", isRandom: true, min: -150, max: -120 }
    ]},
    GOD: { weight: 1, cards: [
-
-
-
-
-
+     { name: "Divine Blessing", symbol: "❂", isRandom: false, value: 160 },
+     { name: "Celestial Gift", symbol: "❂", isRandom: false, value: 190 },
+     { name: "Heaven's Fortune", symbol: "❂", isRandom: false, value: 220 },
+     { name: "World's Bounty", symbol: "❂", isRandom: false, value: 260 },
+     { name: "Godsend", symbol: "❂", isRandom: false, value: 300 },
      { name: "Divine Wrath", symbol: "☄", isRandom: false, value: -160 },
      { name: "Celestial Calamity", symbol: "☄", isRandom: false, value: -190 },
      { name: "Heaven's Judgment", symbol: "☄", isRandom: false, value: -220 },
      { name: "World's Ruin", symbol: "☄", isRandom: false, value: -260 },
      { name: "Catastrophe", symbol: "☄", isRandom: false, value: -300 },
-
-
-
-
-
-
-
-
+     { name: "Cosmic Surge", symbol: "✨", isRandom: true, min: 151, max: 300 },
+     { name: "Starfall Windfall", symbol: "✨", isRandom: true, min: 151, max: 200 },
+     { name: "Astral Windfall", symbol: "✨", isRandom: true, min: 185, max: 245 },
+     { name: "Almighty Jackpot", symbol: "✨", isRandom: true, min: 251, max: 300 },
+     { name: "Fate's Fury", symbol: "✨", isRandom: true, min: -300, max: -151 },
+     { name: "Comet's Curse", symbol: "✨", isRandom: true, min: -200, max: -151 },
+     { name: "Eternal Reckoning", symbol: "✨", isRandom: true, min: -255, max: -205 },
+     { name: "Doomsday Spiral", symbol: "✨", isRandom: true, min: -300, max: -251 }
    ]},
    NULL: { weight: 12, cards: [
      { name: "Null Design 1", symbol: "○", isRandom: false, value: 0 },
      { name: "Null Design 2", symbol: "◌", isRandom: false, value: 0 },
      { name: "Null Design 3", symbol: "◎", isRandom: false, value: 0 },
-
-
+     { name: "Null Design 4", symbol: "⊕", isRandom: false, value: 0 },
+     { name: "Null Design 5", symbol: "⊗", isRandom: false, value: 0 }
    ]}
  };
 
@@ -622,7 +622,7 @@ function ensureWeek() {
   const drawn = hasDrawnToday();
   const drawBtn = document.getElementById("goDrawBtn");
   drawBtn.disabled = false;
-
+  drawBtn.textContent = drawn ? "See your draw for today →" : "Choose today's card →";
   document.getElementById("scoreCaption").textContent = drawn ? "You have drawn today.\nReview your result." : "Your week starts here. Make each draw count.";
   document.getElementById("firstStatus").textContent = state.totalDraws > 0 ? "1/1" : "0/1";
 
@@ -808,7 +808,7 @@ function buildSwipeCards() {
    const card = document.createElement("div");
    card.className = "swipe-card";
    card.dataset.index = i;
-
+   card.innerHTML = `<span class="back-mark"><span>✧</span></span>`;
 
         card.addEventListener("click", () => {
           if (isDragging || isGliding) return;
@@ -1065,7 +1065,7 @@ function confirmAndReveal() {
  document.getElementById("resultName").textContent = `${card.symbol} ${card.name}`;
  document.getElementById("resultEffect").textContent = entry.effect;
  const diff = entry.after - entry.before;
-
+ document.getElementById("resultDetails").textContent = `Weekly score: ${fmt(entry.before)} → ${fmt(entry.after)} (${diff >= 0 ? "+" : ""}${fmt(diff)} points)`;
 
      // Reveal everything smoothly after finalizing
      resultPanel.classList.add("show");
@@ -1088,9 +1088,9 @@ function confirmAndReveal() {
 
  /* Achievements */
  const achievements = [
-
+   { id: "first", icon: "✦", name: "First Draw", desc: "Reveal your first card." },
    { id: "three", icon: "◷", name: "Getting a Habit", desc: "Draw on three different days in one week." },
-
+   { id: "high", icon: "⬆", name: "High Roller", desc: "Finish a draw with 200 or more points." },
    { id: "legendary", icon: "★", name: "One in a Million", desc: "Reveal a Legendary or God card." },
    { id: "low", icon: "☁", name: "Rock Bottom", desc: "Drop below 50 points." }
  ];
