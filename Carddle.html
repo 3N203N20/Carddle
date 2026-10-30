@@ -171,10 +171,27 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
   }
   .chosen-card-display .symbol { font-size: 40px; }
   .chosen-card-display .rarity { font-size: 9px; letter-spacing: .12em; color: #eacb8a; }
+  .chosen-card-display .rarity-odds { font-size: 10px; font-weight: 750; letter-spacing: .01em; opacity: .88; margin-top: 2px; }
   .chosen-card-display .name { font-size: 13px; font-weight: 850; text-align: center; padding: 0 8px; }
   .chosen-card-display .range-badge { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.1); display: none; margin-top: 4px; }
   .chosen-card-display .points { font-size: 22px; font-weight: 850; font-family: monospace; letter-spacing: -0.02em; margin-top: 4px; }
   .chosen-card-display .points.rolling { color: #fff; text-shadow: 0 0 10px rgba(232, 189, 104, 0.8); }
+  /* Rarity colours apply to revealed card fronts only. Carousel backs stay identical. */
+  .chosen-card-display.rarity-common { background:linear-gradient(145deg,#ffffff,#dfe3e8); border-color:#c9d0d8; color:#252a32; }
+  .chosen-card-display.rarity-common .rarity { color:#596575; }
+  .chosen-card-display.rarity-uncommon { background:linear-gradient(145deg,#b8efc8,#267a4b); border-color:#72d69a; color:#102b1b; }
+  .chosen-card-display.rarity-uncommon .rarity { color:#174b2d; }
+  .chosen-card-display.rarity-rare { background:linear-gradient(145deg,#a9d8ff,#245baf); border-color:#65b5ff; color:#10284b; }
+  .chosen-card-display.rarity-rare .rarity { color:#173d72; }
+  .chosen-card-display.rarity-epic { background:linear-gradient(145deg,#d9b8ff,#7136a7); border-color:#b88aff; color:#fff; }
+  .chosen-card-display.rarity-epic .rarity { color:#f0ddff; }
+  .chosen-card-display.rarity-legendary { background:linear-gradient(145deg,#ffaaa2,#a92332); border-color:#ff7770; color:#fff; }
+  .chosen-card-display.rarity-legendary .rarity { color:#ffe0dc; }
+  .chosen-card-display.rarity-god { background:linear-gradient(145deg,#fff0a8,#c58a18); border-color:#ffe08a; color:#49300a; box-shadow:0 15px 35px rgba(0,0,0,.7),0 0 24px rgba(255,207,77,.25); }
+  .chosen-card-display.rarity-god .rarity { color:#69470c; }
+  .chosen-card-display.rarity-null { background:linear-gradient(145deg,#555963,#17191f); border-color:#777d89; color:#f0f0f2; }
+  .chosen-card-display.rarity-null .rarity { color:#c2c5cc; }
+  .chosen-card-display .range-badge { color:inherit; background:rgba(0,0,0,.10); border-color:rgba(0,0,0,.15); }
 
  .result { margin-top: 20px; border: 1px solid #5b4b32; border-radius: 16px; padding: 20px; background: #242119; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateY(10px); }
  .result.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
@@ -190,10 +207,90 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
  .history-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
  .history-row:last-child { border-bottom: 0; }
  .empty { text-align: center; padding: 25px 12px; color: var(--muted); font-size: 13px; }
+ .quick-rules { margin: 2px 0 8px; padding-left: 20px; color: var(--text); font-size: 12px; line-height: 1.8; }
+ .quick-rules li { padding-left: 3px; margin: 3px 0; }
+  .rules-table { width:100%; border-collapse:collapse; font-size:11px; margin:8px 0; }
+  .rules-table th,.rules-table td { text-align:left; padding:9px 7px; border-bottom:1px solid var(--line); }
+  .rules-table th { color:var(--muted); font-weight:800; }
+  .table-wrap { overflow-x:auto; }
+ .full-rules-link { font-size: 11px; margin-top: 8px; }
+ .inline-link { border: 0; padding: 0; background: none; color: var(--gold); text-decoration: underline; font: inherit; font-weight: 800; cursor: pointer; }
+ .settings-group { margin-top: 18px; padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: var(--panel); }
+ .settings-group h2 { font-size: 15px; margin: 0 0 12px; }
+ .settings-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:11px 0; border-top:1px solid var(--line); }
+ .settings-row:first-of-type { border-top:0; }
+ .settings-row strong { display:block; font-size:13px; }
+ .settings-row p { font-size:11px; margin-top:4px; }
+ .settings-row button { flex-shrink:0; }
+ .small-btn { padding:8px 11px; border-radius:10px; border:1px solid var(--line); background:var(--panel2); color:var(--text); font-size:11px; font-weight:750; }
+ .leaderboard-metric { padding:15px; border:1px solid var(--line); border-radius:14px; background:var(--panel); margin-top:10px; }
+ .leaderboard-metric strong { display:block; font-size:24px; margin-top:5px; }
+ .leaderboard-metric p { font-size:11px; margin-top:5px; }
+ .leaderboard-section { margin-top:16px; }
+ .leaderboard-subhead { font-size:13px; margin:18px 0 7px; color:var(--text); }
+ .leaderboard-section > p { font-size:12px; }
+ .leaderboard-note { margin-bottom:12px; }
 
- /* Toast Alert */
+ /* Leaderboard selectors: full-width segmented pills, matching the approved preview. */
+ .lb-tabs,.lb-subtabs { display:flex; width:100%; gap:0; flex-wrap:nowrap; margin:14px 0; padding:4px; border:0; border-radius:999px; background:var(--panel2); }
+ .lb-tab,.lb-subtab { flex:1 1 0; min-width:0; border:0; background:transparent; color:var(--muted); border-radius:999px; padding:12px 8px; font-size:clamp(12px,3.4vw,16px); font-weight:700; white-space:nowrap; }
+ .lb-tab.active,.lb-subtab.active { background:var(--panel); color:var(--text); border:0; box-shadow:0 1px 3px #0000000a; }
+ #lbMetricTabs { margin-top:22px; }
+ .leaderboard-unavailable { border:1px solid var(--line); border-radius:14px; background:var(--panel2); padding:18px; margin-top:12px; }
+ .leaderboard-unavailable strong { display:block; font-size:15px; margin-bottom:7px; }
+ .leaderboard-unavailable p { margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
+ .lb-player-card { border:1px solid var(--gold); background:linear-gradient(135deg,#3a3020,#211f25); border-radius:15px; padding:14px; margin:12px 0; box-shadow:0 0 0 1px #a77d3a33; }
+ .lb-player-card .lb-rank { font-size:25px; font-weight:900; color:var(--gold); }
+ .lb-row { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:11px 12px; border-bottom:1px solid var(--line); background:var(--panel); font-size:12px; }
+ .lb-row:first-child { border-radius:12px 12px 0 0; }
+ .lb-row:last-child { border-radius:0 0 12px 12px; border-bottom:0; }
+ .lb-row .lb-rank { width:34px; color:var(--muted); font-weight:800; }
+ .lb-row .lb-name { flex:1; font-weight:700; }
+ .lb-row .lb-score { font-weight:800; }
+ .lb-podium { display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; align-items:end; margin:12px 0; }
+ .lb-podium-card { text-align:center; border:1px solid var(--line); border-radius:13px; padding:10px 5px; background:var(--panel2); min-width:0; }
+ .lb-podium-card.first { grid-column:2; grid-row:1; min-height:122px; border-color:#d8ad49; background:linear-gradient(150deg,#55421d,#29231a); }
+ .lb-podium-card.second { grid-column:1; grid-row:1; min-height:98px; border-color:#aeb7c4; }
+ .lb-podium-card.third { grid-column:3; grid-row:1; min-height:88px; border-color:#a87550; }
+ .lb-podium-card .medal { font-size:20px; }
+ .lb-podium-card strong { display:block; font-size:11px; overflow-wrap:anywhere; margin:5px 0; }
+ .lb-podium-card span { font-size:11px; color:var(--muted); }
+ .lb-podium-card.mine { outline:2px solid var(--gold); }
+ .lb-list { border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+ .lb-sim { border:1px dashed var(--gold2); border-radius:13px; padding:13px; margin-top:14px; }
+ .lb-sim label { display:block; font-size:12px; font-weight:750; margin-bottom:8px; }
+ .lb-sim select { width:100%; padding:10px; border-radius:9px; border:1px solid var(--line); color:var(--text); background:var(--panel2); }
+ .lb-sim small { display:block; color:var(--muted); font-size:10px; line-height:1.45; margin-top:8px; }
+ body.light-mode .lb-player-card { background:linear-gradient(135deg,#fff2d2,#fff); }
+
+ body.light-mode { --bg:#f5f3ee; --panel:#ffffff; --panel2:#eeece6; --text:#24232a; --muted:#696b76; --line:#d8d5cc; --gold:#b07b21; --gold2:#8c6118; background:radial-gradient(ellipse at top,#ffffff 0%,var(--bg) 60%); }
+ body.light-mode .nav button { background:#fff; }
+ body.light-mode .nav button.active { background:#f5ebd7; }
+ body.light-mode .secondary, body.light-mode .small-btn { background:#f0eee8; color:var(--text); border-color:var(--line); }
+ body.light-mode .score-panel { background:linear-gradient(135deg,#fff5df,#ffffff 75%); border-color:#d7c49e; }
+ body.light-mode .result { background:#fff8e9; }
+ body.light-mode .achievement .medal { color:#ffe0a0; background:#302a20; border:1px solid #8c6b35; }
+ body.light-mode #swipingScreen { background:radial-gradient(ellipse at center,#f5f0e6 0%,#e8e4db 70%); }
+ body.light-mode .swipe-card { background:linear-gradient(145deg,#f5f0e6,#ded9cd 55%,#eee8f5); }
+
+
+ /* Ordinary toast alerts */
  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); padding: 11px 15px; border-radius: 12px; background: #f4f0e8; color: #181818; font-size: 12px; font-weight: 750; box-shadow: 0 8px 30px #0008; display: none; max-width: 90vw; z-index: 1000; }
  .toast.show { display: block; }
+
+ /* Non-blocking achievement banner: prominent, top-aligned, and swipe-dismissible */
+ .achievement-notice { position:fixed; top:calc(env(safe-area-inset-top, 0px) + 14px); left:50%; transform:translate(-50%,-145%); z-index:1200; display:block; width:min(560px,calc(100vw - 28px)); padding:0; background:transparent; border:0; pointer-events:none; opacity:0; transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .25s ease; }
+ .achievement-notice.show { transform:translate(-50%,0); opacity:1; }
+ .achievement-notice-card { position:relative; display:grid; grid-template-columns:62px minmax(0,1fr) 32px; align-items:center; gap:14px; width:100%; padding:16px 17px; text-align:left; color:#fff8e8; background:linear-gradient(115deg,#59451f 0%,#282119 48%,#17171d 100%); border:1.5px solid #d6ad55; border-radius:18px; box-shadow:0 12px 34px #0008,0 0 0 3px #d6ad5526; pointer-events:auto; touch-action:pan-y; cursor:grab; user-select:none; }
+ .achievement-notice-card:before { content:""; position:absolute; inset:5px; border:1px solid #d6ad5555; border-radius:13px; pointer-events:none; }
+ .achievement-notice-kicker { grid-column:2; font-size:10px; font-weight:900; letter-spacing:1.8px; color:#f3cf7b; align-self:end; }
+ .achievement-notice-medal { grid-column:1; grid-row:1 / span 2; width:60px; height:60px; display:grid; place-items:center; border-radius:50%; font-size:31px; color:#fff0bd; background:radial-gradient(circle at 35% 25%,#a98238,#55401e 72%); border:2px solid #f0cf80; box-shadow:0 0 18px #e9bd5a55,inset 0 2px 8px #fff5; }
+ .achievement-notice-card h2 { grid-column:2; margin:1px 0 0; font-size:19px; line-height:1.2; color:#fff8e8; align-self:start; }
+ .achievement-notice-card p { grid-column:2; margin:4px 0 0; color:#e4d8bd; font-size:13px; line-height:1.35; }
+ .achievement-notice-card button { grid-column:3; grid-row:1 / span 3; align-self:start; justify-self:end; width:30px; height:30px; padding:0; border:1px solid #f2d58e88; border-radius:50%; color:#fff0bd; background:#ffffff12; font-size:19px; line-height:1; font-weight:700; cursor:pointer; }
+ .achievement-notice-card.dragging { transition:none; }
+ @media (max-width:420px) { .achievement-notice-card { grid-template-columns:52px minmax(0,1fr) 28px; gap:11px; padding:14px 13px; } .achievement-notice-medal { width:50px; height:50px; font-size:27px; } .achievement-notice-card h2 { font-size:17px; } .achievement-notice-card p { font-size:12px; } }
+ @media (prefers-reduced-motion:reduce) { .achievement-notice { transition:none; } }
 
  /* Modal Dialog for custom reset confirmation */
  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 1100; padding: 20px; }
@@ -263,14 +360,13 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
 <div class="app">
   <div>
    <header id="mainHeader">
-     <div class="brand" style="font-size:13px; letter-spacing:.18em; font-weight:800; color:var(--gold);">DAILY DRAW</div>
-     <div class="week-pill" id="weekLabel">WEEK 1</div>
+     <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="Return to home" style="font-size:18px; letter-spacing:-.03em; font-weight:850; color:var(--gold);">Carddle</div>
+     <div class="week-pill" id="weekLabel">Week 1 • Day 1</div>
    </header>
 
   <main>
    <!-- Home Screen -->
    <section class="screen active" id="homeScreen">
-    <div class="eyebrow" id="dayLabel">YOUR WEEKLY RUN</div>
     <h1>One card can<br>change everything.</h1>
     <p>Draw once a day. Build your score. See how your week ends.</p>
 
@@ -286,14 +382,8 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
         <button class="stat tracker-trigger" id="openTrackerBtn" type="button" aria-label="Open weekly and monthly draw calendar"><div class="eyebrow">DAYS DRAWN THIS WEEK</div><strong id="drawCount">0</strong><span class="tracker-open-hint">View calendar →</span></button>
      </div>
 
-     <div class="section-head"><h2>Achievements</h2><button class="tiny-link" data-screen="achievementsScreen">VIEW ALL →</button></div>
-     <div class="achievement" id="firstAchievement">
-      <div class="medal">✦</div><div><strong>First Draw</strong><span>Reveal your first card.</span></div>
-      <span id="firstStatus" style="margin-left:auto">0/1</span>
-     </div>
 
-     <div class="section-head"><h2>How it works</h2></div>
-     <div class="notice">Start each week at 100 points. You get one draw per calendar day. At the end of the week, your final weekly score is added to your lifetime total. Missed days don't carry over.</div>
+
     </section>
 
     <!-- Weekly / Monthly Draw Calendar -->
@@ -337,13 +427,13 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
      <div class="chosen-card-display" id="chosenCardDisplay">
       <div class="symbol" id="resSymbol">✦</div>
       <div class="rarity" id="resRarity">COMMON</div>
+      <div class="rarity-odds" id="resRarityOdds">42.67% · 32 in 75 draws</div>
       <div class="name" id="resCardName">Lucky Find</div>
       <div class="range-badge" id="resCardRange">Range: +15 pts</div>
       <div class="points" id="resCardPoints">+15 pts</div>
      </div>
 
      <div class="result" id="resultPanel">
-      <div class="eyebrow">EFFECT APPLIED</div>
       <h2 id="resultName">Lucky Find</h2>
       <div class="effect" id="resultEffect">+15 points</div>
       <div class="score-change" id="resultDetails">Your weekly score changed.</div>
@@ -361,33 +451,202 @@ p { color: var(--muted); line-height: 1.5; margin: 0; }
     <div id="achievementList"></div>
    </section>
 
+    <!-- Settings Screen -->
+    <section class="screen" id="settingsScreen">
+      <div class="draw-top"><button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button><div><h1>Settings</h1><p>Manage your profile and preferences.</p></div></div>
+      <div class="settings-group">
+        <h2>Account</h2>
+        <div class="settings-row"><div><strong>Google / Gmail sign-in</strong><p>Connect an account to sync progress across devices.</p></div><button class="small-btn" id="signInDraftBtn">Sign in</button></div>
+        <div class="settings-row"><div><strong>Profile</strong><p>Set your display name and profile details.</p></div><button class="small-btn" id="profileDraftBtn">Edit profile</button></div>
+      </div>
+      <div class="settings-group">
+        <h2>Game information</h2>
+        <div class="settings-row"><div><strong>How to play</strong><p>The basic rules of Daily Draw.</p></div></div>
+        <ul class="quick-rules">
+          <li>Start each week with <strong>100 points</strong>.</li>
+          <li>You can draw <strong>once per day</strong>.</li>
+          <li>Your card changes your current weekly score.</li>
+          <li>At the end of the week, your final weekly score is added to your lifetime total.</li>
+          <li>Missed days cannot be played later.</li>
+        </ul>
+        <p class="full-rules-link">For the full rule description, click <button class="inline-link" data-screen="fullRulesScreen">here</button>.</p>
+        <div class="settings-row"><div><strong>Draw history</strong><p>Review your previous cards and weekly results.</p></div><button class="small-btn" data-screen="historyScreen">View history</button></div>
+      </div>
+      <div class="settings-group">
+        <h2>Appearance</h2>
+        <div class="settings-row"><div><strong>Dark / Light mode</strong><p>Change the game's appearance on this device.</p></div><button class="small-btn" id="themeToggleBtn" aria-pressed="false">Switch to light</button></div>
+      </div>
+      <div class="settings-group">
+        <h2>Data</h2>
+        <div class="settings-row"><div><strong>Reset game data</strong><p>Clear scores, history, and achievements stored here.</p></div><button class="small-btn" id="settingsResetBtn">Reset</button></div>
+        <p style="font-size:11px;margin-top:10px">Sign-in and profile are design drafts only. Online accounts and cloud syncing are not connected yet.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="fullRulesScreen">
+      <div class="draw-top"><button class="back" data-screen="settingsScreen" aria-label="Back to settings">‹</button><div><h1>Full Rules</h1><p>How Daily Draw works, from your first draw to the end of each week.</p></div></div>
+      <div class="settings-group">
+        <h2>1. Objective</h2>
+        <p>Daily Draw is a daily card-drawing game. Your aim is to build up your Weekly Score by drawing one card each day. Cards can increase your score, decrease it, or leave it unchanged. Your score can fall below zero.</p>
+      </div>
+      <div class="settings-group">
+        <h2>2. Daily draw</h2>
+        <ol class="quick-rules">
+          <li>Choose <strong>Choose today's card</strong> from the Home screen.</li>
+          <li>Swipe left or right to browse the face-down cards.</li>
+          <li>Tap a card once to select it. Tap it again to confirm your choice.</li>
+          <li>The card is then revealed and its point effect is applied to your Weekly Score.</li>
+          <li>You may draw only <strong>once per calendar day</strong>. After confirming a draw, you cannot change, cancel, or redraw it.</li>
+        </ol>
+        <p>If you return to a result you have already drawn that day, you are only reviewing it. The score is not changed again. A missed day cannot be made up later.</p>
+        <p>All day and week boundaries are calculated using <strong>Japan Standard Time (JST, UTC+9)</strong>.</p>
+      </div>
+      <div class="settings-group">
+        <h2>3. Cards and rarities</h2>
+        <p>Each card belongs to a rarity. Higher rarities generally have larger possible point effects. A card may have a fixed value or a value randomly selected from its displayed range. Positive values add points; negative values subtract points; Null cards have no point effect.</p>
+        <p>All cards have identical backs while you are choosing, so you cannot identify a card's rarity before it is revealed.</p>
+        <h3 style="margin:14px 0 7px;font-size:13px">Rarity chances</h3>
+        <p>These are the chances of drawing each <strong>rarity</strong> on a single draw, based on the current draw system. They are not the chances of drawing a particular card.</p>
+        <div class="table-wrap"><table class="rules-table"><thead><tr><th>Rarity</th><th>Chance per draw</th><th>Equivalent odds</th></tr></thead><tbody>
+          <tr><td>Common</td><td>42.67%</td><td>32 in 75 draws</td></tr>
+          <tr><td>Uncommon</td><td>21.33%</td><td>16 in 75 draws</td></tr>
+          <tr><td>Rare</td><td>10.67%</td><td>8 in 75 draws</td></tr>
+          <tr><td>Epic</td><td>5.33%</td><td>4 in 75 draws</td></tr>
+          <tr><td>Legendary</td><td>2.67%</td><td>2 in 75 draws</td></tr>
+          <tr><td>God</td><td>1.33%</td><td>1 in 75 draws</td></tr>
+          <tr><td>Null</td><td>16.00%</td><td>12 in 75 draws</td></tr>
+        </tbody></table></div>
+        <p>Each draw is random. These percentages describe the long-run probability, not a guarantee: for example, drawing 75 times does not guarantee that you will receive one God card.</p>
+      </div>
+      <div class="settings-group">
+        <h2>4. Weekly score and Lifetime Total</h2>
+        <ul class="quick-rules">
+          <li>At the beginning of each week, your Weekly Score starts at <strong>100 points</strong>.</li>
+          <li>Each daily card changes the current Weekly Score. The score carries forward from one day to the next.</li>
+          <li>Your final Weekly Score is the cumulative result after the week's draws, including the starting 100 points.</li>
+          <li>When the week ends, that final Weekly Score is added to your <strong>Lifetime Total</strong>.</li>
+          <li>Your Weekly Score then resets to 100 for the new week.</li>
+        </ul>
+        <p>A week runs from <strong>Sunday 00:00 to the following Sunday 00:00 JST</strong>. If you have not drawn on all seven days, the final score still carries over when the week ends; missed days do not pause the week.</p>
+      </div>
+      <div class="settings-group">
+        <h2>5. Calendar and missed days</h2>
+        <p>The calendar records whether you completed a draw on each date:</p>
+        <ul class="quick-rules">
+          <li><strong>Green:</strong> you completed that day's draw.</li>
+          <li><strong>Red:</strong> the day passed without a draw.</li>
+          <li><strong>Grey:</strong> other days, including future days and days before your recorded activity.</li>
+        </ul>
+        <p>You can switch between the weekly and monthly calendar views. The calendar uses JST dates.</p>
+      </div>
+      <div class="settings-group">
+        <h2>6. Streaks</h2>
+        <p>A streak counts consecutive calendar days on which you successfully draw a card. Missing a day breaks your current streak. Drawing again on a later day starts a new streak; it does not repair the missed day. Your longest streak is retained as a personal record.</p>
+      </div>
+      <div class="settings-group">
+        <h2>7. Achievements</h2>
+        <p>Achievements are unlocked by reaching the following milestones:</p>
+        <ul class="quick-rules">
+          <li><strong>First Draw:</strong> reveal your first card.</li>
+          <li><strong>Getting a Habit:</strong> draw on three different days in one week.</li>
+          <li><strong>High Roller:</strong> finish a draw with a Weekly Score of 200 points or more.</li>
+          <li><strong>One in a Million:</strong> reveal a Legendary or God card.</li>
+          <li><strong>Rock Bottom:</strong> finish a draw with a Weekly Score below 50 points.</li>
+        </ul>
+        <p>Unlocked achievements remain recorded in your game data.</p>
+      </div>
+      <div class="settings-group">
+        <h2>8. Draw history</h2>
+        <p>Draw History records your revealed cards, draw dates, week numbers, point changes, and resulting scores. It also displays your Lifetime Total. The history view shows your most recent 30 recorded draws.</p>
+      </div>
+      <div class="settings-group">
+        <h2>9. Personal records</h2>
+        <p>The Leaderboard's Personal Best section tracks your highest and worst completed Weekly Scores, highest and worst Monthly Scores, and longest streak. Monthly Score is the total of the completed weekly scores credited during that calendar month. A monthly record is finalized when the calendar month changes.</p>
+      </div>
+      <div class="settings-group">
+        <h2>10. Guest data and online rankings</h2>
+        <p>In the current version, your progress is stored in this browser on this device. Clearing the browser's site data or using a different browser or device may mean that this local progress is not available there.</p>
+        <p>Account sign-in, cloud synchronization, and global rankings are not connected yet. The Global Rankings area is therefore unavailable in Guest Mode. Your email address is not displayed as a public player name.</p>
+      </div>
+      <div class="settings-group">
+        <h2>11. Settings and data</h2>
+        <p>You can switch between Dark Mode and Light Mode in Settings. <strong>Reset game data</strong> clears the scores, draw history, and achievements saved in this browser. This action cannot be undone.</p>
+      </div>
+    </section>
+
+    <!-- Leaderboard Screen -->
+    <section class="screen" id="leaderboardScreen">
+      <div class="draw-top"><button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button><div><h1>Leaderboard</h1><p>Personal records and player rankings.</p></div></div>
+      <div class="settings-group leaderboard-section">
+        <h2>Personal Best (PB)</h2>
+        <p>Records update after each period is completed.</p>
+        <div class="leaderboard-metric"><div class="eyebrow">HIGHEST WEEKLY SCORE</div><strong id="bestWeeklyScore">—</strong></div>
+        <div class="leaderboard-metric"><div class="eyebrow">WORST WEEKLY SCORE</div><strong id="worstWeeklyScore">—</strong></div>
+        <div class="leaderboard-metric"><div class="eyebrow">HIGHEST MONTHLY SCORE</div><strong id="bestMonthlyScore">—</strong></div>
+        <div class="leaderboard-metric"><div class="eyebrow">WORST MONTHLY SCORE</div><strong id="worstMonthlyScore">—</strong></div>
+        <div class="leaderboard-metric"><div class="eyebrow">LONGEST STREAK</div><strong id="bestStreak">0 days</strong></div>
+      </div>
+      <div class="settings-group leaderboard-section">
+        <h2>Global Rankings</h2>
+        <div class="leaderboard-unavailable">
+          <strong>Global rankings are temporarily unavailable</strong>
+          <p>Global rankings will be available once sign-in is implemented. Your personal records remain available in the meantime.</p>
+        </div>
+
+        <!-- Global ranking interface is intentionally hidden, not deleted.
+             It can be enabled when account sign-in and the shared database are ready. -->
+        <div id="globalRankingInterface" style="display:none" aria-hidden="true">
+          <div class="lb-tabs" id="lbPeriodTabs">
+            <button class="lb-tab active" data-period="weekly">Weekly</button>
+            <button class="lb-tab" data-period="monthly">Monthly</button>
+            <button class="lb-tab" data-period="alltime">All-time</button>
+          </div>
+          <div class="lb-subtabs" id="lbMetricTabs">
+            <button class="lb-subtab active" data-metric="best">Best (+)</button>
+            <button class="lb-subtab" data-metric="worst">Worst (−)</button>
+            <button class="lb-subtab" data-metric="totalcp">Total CP</button>
+            <button class="lb-subtab" data-metric="achievements">Achievements</button>
+            <button class="lb-subtab" data-metric="streak">Streak</button>
+          </div>
+          <div id="leaderboardRanking"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- History Screen -->
     <section class="screen" id="historyScreen">
       <div class="draw-top">
-       <button class="back" data-screen="homeScreen" aria-label="Back to home">‹</button>
+       <button class="back" data-screen="settingsScreen" aria-label="Back to settings">‹</button>
        <div><h1>Draw history</h1><p>Your recent cards and weekly results.</p></div>
       </div>
       <div class="stat"><div class="eyebrow">LIFETIME TOTAL</div><strong id="historyLifetime">0 pts</strong></div>
       <div id="historyList" style="margin-top:15px"></div>
-      <button class="secondary wide" id="resetBtn">Reset prototype data</button>
-      <p style="font-size:11px;margin-top:10px">Reset only affects this browser on this device.</p>
     </section>
    </main>
   </div>
 
  <nav class="nav" id="mainNav" aria-label="Main navigation">
-  <button class="active" data-screen="homeScreen">⌂ &nbsp; Home</button>
-  <button data-screen="historyScreen">◷ &nbsp; History</button>
+  <button data-screen="settingsScreen">⚙ &nbsp; Settings</button>
   <button data-screen="achievementsScreen">✦ &nbsp; Achievements</button>
+  <button data-screen="leaderboardScreen">♜ &nbsp; Leaderboard</button>
  </nav>
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="achievement-notice" id="achievementNotice" role="status" aria-live="polite" aria-labelledby="achievementNoticeTitle">
+ <div class="achievement-notice-card" id="achievementNoticeCard">
+  <div class="achievement-notice-kicker">ACHIEVEMENT UNLOCKED</div>
+  <div class="achievement-notice-medal" id="achievementNoticeIcon">✦</div>
+  <h2 id="achievementNoticeTitle">First Draw</h2>
+  <p id="achievementNoticeDescription">Reveal your first card.</p>
+  <button type="button" id="achievementNoticeClose" aria-label="Dismiss achievement notification">×</button>
+ </div>
+</div>
 
 <!-- Modal Dialog -->
 <div class="modal-overlay" id="confirmModal">
  <div class="modal-box">
-   <h3>Reset Prototype Data?</h3>
+   <h3>Reset Game Data?</h3>
    <p>Are you sure you want to reset all scores, draw history, and achievements?</p>
 
   <div class="modal-actions">
@@ -511,6 +770,15 @@ LEGENDARY: { weight: 2, cards: [
    ]}
  };
 
+ // Public rarity odds are calculated from the same weights used by drawCard().
+ function getRarityOdds(rarity) {
+   const totalWeight = Object.values(rawCatalog).reduce((sum, category) => sum + category.weight, 0);
+   const weight = rawCatalog[rarity]?.weight || 0;
+   if (!weight || !totalWeight) return "";
+   const percent = (weight / totalWeight * 100).toFixed(2);
+   return `${percent}% · ${weight} in ${totalWeight} draws`;
+ }
+
  // Logic to draw a weighted card
  function drawCard() {
    const totalWeight = Object.values(rawCatalog).reduce((sum, category) => sum + category.weight, 0);
@@ -558,6 +826,11 @@ LEGENDARY: { weight: 2, cards: [
     return `${d.getUTCFullYear()}-W-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
   };
 
+ const getMonthKey = () => {
+   const d = getJST();
+   return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`;
+ };
+
  const initialState = () => ({
   weekKey: getWeekKey(),
   weekNumber: 1,
@@ -566,7 +839,15 @@ LEGENDARY: { weight: 2, cards: [
   drawDates: [],
   history: [],
   totalDraws: 0,
-  unlocked: []
+  unlocked: [],
+  bestWeeklyScore: null,
+  worstWeeklyScore: null,
+  monthlyScore: 0,
+  bestMonthlyScore: null,
+  worstMonthlyScore: null,
+  monthKey: getMonthKey(),
+  bestTotalCP: 0,
+  mostAchievements: 0
 });
 
 let state;
@@ -580,6 +861,14 @@ if (!state.weekKey) state.weekKey = getWeekKey();
 if (!Number.isFinite(state.weekNumber)) state.weekNumber = 1;
 if (!Number.isFinite(state.weeklyScore)) state.weeklyScore = START_SCORE;
 if (!Number.isFinite(state.lifetimeTotal)) state.lifetimeTotal = 0;
+if (!Number.isFinite(state.monthlyScore)) state.monthlyScore = 0;
+if (!Number.isFinite(state.bestTotalCP)) state.bestTotalCP = state.lifetimeTotal;
+if (!Number.isFinite(state.mostAchievements)) state.mostAchievements = Array.isArray(state.unlocked) ? state.unlocked.length : 0;
+if (!state.monthKey) state.monthKey = getMonthKey();
+if (state.bestWeeklyScore === undefined) state.bestWeeklyScore = null;
+if (state.worstWeeklyScore === undefined) state.worstWeeklyScore = null;
+if (state.bestMonthlyScore === undefined) state.bestMonthlyScore = null;
+if (state.worstMonthlyScore === undefined) state.worstMonthlyScore = null;
 
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
 
@@ -591,12 +880,65 @@ function showToast(msg) {
   showToast.timer = setTimeout(() => t.classList.remove("show"), 2300);
 }
 
+const achievementNoticeQueue = [];
+let achievementNoticeActive = false;
+function showAchievementNotification(achievement) {
+  achievementNoticeQueue.push(achievement);
+  if (!achievementNoticeActive) displayNextAchievementNotification();
+}
+function displayNextAchievementNotification() {
+  const achievement = achievementNoticeQueue.shift();
+  if (!achievement) { achievementNoticeActive = false; return; }
+  achievementNoticeActive = true;
+  const notice = document.getElementById("achievementNotice");
+  document.getElementById("achievementNoticeIcon").textContent = achievement.icon;
+  document.getElementById("achievementNoticeTitle").textContent = achievement.name;
+  document.getElementById("achievementNoticeDescription").textContent = achievement.desc;
+  notice.classList.add("show");
+  clearTimeout(displayNextAchievementNotification.timer);
+  displayNextAchievementNotification.timer = setTimeout(closeAchievementNotification, 5000);
+}
+function closeAchievementNotification() {
+  const notice = document.getElementById("achievementNotice");
+  if (!notice.classList.contains("show")) return;
+  notice.classList.remove("show");
+  clearTimeout(displayNextAchievementNotification.timer);
+  setTimeout(displayNextAchievementNotification, 340);
+}
+document.getElementById("achievementNoticeClose").addEventListener("click", closeAchievementNotification);
+// A horizontal swipe dismisses the banner without blocking vertical page scrolling.
+const achievementNoticeCard = document.getElementById("achievementNoticeCard");
+let achievementSwipeStart = null;
+achievementNoticeCard.addEventListener("pointerdown", event => {
+  achievementSwipeStart = { x: event.clientX, y: event.clientY, id: event.pointerId };
+});
+achievementNoticeCard.addEventListener("pointerup", event => {
+  if (!achievementSwipeStart || achievementSwipeStart.id !== event.pointerId) return;
+  const dx = event.clientX - achievementSwipeStart.x;
+  const dy = event.clientY - achievementSwipeStart.y;
+  achievementSwipeStart = null;
+  if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.25) closeAchievementNotification();
+});
+achievementNoticeCard.addEventListener("pointercancel", () => { achievementSwipeStart = null; });
+
 function hasDrawnToday() { return state.drawDates.includes(todayKey()); }
 
 function ensureWeek() {
+  const currentMonth = getMonthKey();
+  if (currentMonth !== state.monthKey) {
+    state.bestMonthlyScore = state.bestMonthlyScore === null ? state.monthlyScore : Math.max(state.bestMonthlyScore, state.monthlyScore);
+    state.worstMonthlyScore = state.worstMonthlyScore === null ? state.monthlyScore : Math.min(state.worstMonthlyScore, state.monthlyScore);
+    state.monthlyScore = 0;
+    state.monthKey = currentMonth;
+  }
   const wk = getWeekKey();
   if (wk !== state.weekKey) {
-    state.lifetimeTotal += state.weeklyScore;
+    const completedWeekScore = state.weeklyScore;
+    state.bestWeeklyScore = state.bestWeeklyScore === null ? completedWeekScore : Math.max(state.bestWeeklyScore, completedWeekScore);
+    state.worstWeeklyScore = state.worstWeeklyScore === null ? completedWeekScore : Math.min(state.worstWeeklyScore, completedWeekScore);
+    state.monthlyScore += completedWeekScore;
+    state.lifetimeTotal += completedWeekScore;
+    state.bestTotalCP = Math.max(state.bestTotalCP || 0, state.lifetimeTotal);
     state.weeklyScore = START_SCORE;
     state.weekKey = wk;
     state.weekNumber += 1;
@@ -610,8 +952,7 @@ function ensureWeek() {
  function renderHome() {
    ensureWeek();
    const jstDay = getJST().getUTCDay() + 1;
-   document.getElementById("weekLabel").textContent = `WEEK ${state.weekNumber}`;
-   document.getElementById("dayLabel").textContent = `WEEK ${state.weekNumber} · DAY ${jstDay} (JST)`;
+   document.getElementById("weekLabel").textContent = `Week ${state.weekNumber} • Day ${jstDay}`;
    document.getElementById("weeklyScore").innerHTML = `${fmt(state.weeklyScore)} <small>pts</small>`;
    document.getElementById("lifetimeScore").textContent = `${fmt(state.lifetimeTotal)} pts`;
    document.getElementById("drawCount").textContent = `${state.drawDates.length}`;
@@ -624,13 +965,16 @@ function ensureWeek() {
   drawBtn.disabled = false;
   drawBtn.textContent = drawn ? "See your draw for today →" : "Choose today's card →";
   document.getElementById("scoreCaption").textContent = drawn ? "You have drawn today.\nReview your result." : "Your week starts here. Make each draw count.";
-  document.getElementById("firstStatus").textContent = state.totalDraws > 0 ? "1/1" : "0/1";
 
      renderAchievements();
      renderHistory();
  }
 
  function go(screenId) {
+   if (screenId !== "choosingScreen" && rollAnimId) {
+     cancelAnimationFrame(rollAnimId);
+     rollAnimId = null;
+   }
    document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
    document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.screen === screenId));
    if (screenId === "homeScreen") renderHome();
@@ -638,6 +982,8 @@ function ensureWeek() {
    if (screenId === "trackerScreen") renderTrackers();
    if (screenId === "historyScreen") renderHistory();
    if (screenId === "achievementsScreen") renderAchievements();
+   if (screenId === "leaderboardScreen") renderLeaderboard();
+   if (screenId === "settingsScreen") renderThemeButton();
    window.scrollTo({top: 0, behavior: "smooth"});
  }
 
@@ -995,17 +1341,21 @@ function confirmAndReveal() {
      if (!cardDef) return;
 
      document.getElementById("resultTitleText").textContent = "Reviewing Today's Draw";
-     animateCardReveal(cardDef, entry);
+     animateCardReveal(cardDef, entry, true);
  }
 
- function animateCardReveal(card, entry) {
+ function animateCardReveal(card, entry, isReview = false) {
 
   if (rollAnimId) cancelAnimationFrame(rollAnimId);
 
   const finalValue = entry.after - entry.before;
 
+  const cardFront = document.getElementById("chosenCardDisplay");
+  cardFront.className = `chosen-card-display rarity-${String(entry.rarity || card.rarity || "common").toLowerCase()}`;
   document.getElementById("resSymbol").textContent = card.symbol;
-  document.getElementById("resRarity").textContent = entry.rarity;
+  const revealedRarity = entry.rarity || card.rarity || "COMMON";
+  document.getElementById("resRarity").textContent = revealedRarity;
+  document.getElementById("resRarityOdds").textContent = getRarityOdds(String(revealedRarity).toUpperCase());
   document.getElementById("resCardName").textContent = card.name;
 
   const rangeEl = document.getElementById("resCardRange");
@@ -1014,20 +1364,25 @@ function confirmAndReveal() {
   const finishBtn = document.getElementById("finishDrawBtn");
 
   resultPanel.classList.remove("show"); // Keep details hidden initially
-  finishBtn.disabled = true;
+  resultPanel.style.display = "";
+  finishBtn.disabled = false;
 
   // Navigate to choosing screen
   document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
   document.getElementById("choosingScreen").classList.add("active");
+  // Review mode shows only the card animation and keeps the home back button available.
+  document.getElementById("resultTitleText").textContent = isReview ? "Today's Draw" : "Today's Result";
+  document.getElementById("drawSubtitle").textContent = "Card revealed successfully";
 
     if (card.isRandom) {
       rangeEl.style.display = "block";
       rangeEl.textContent = `Range: ${card.min > 0 ? '+' : ''}${card.min} to ${card.max > 0 ? '+' : ''}${card.max} pts`;
 
-   // Setup panel text for rolling phase
+   // Keep the normal result panel; omit only the temporary rolling/status messages.
    document.getElementById("resultName").textContent = `${card.symbol} ${card.name}`;
-   document.getElementById("resultEffect").textContent = "Rolling...";
-   document.getElementById("resultDetails").textContent = "Determining final outcome...";
+   document.getElementById("resultEffect").textContent = entry.effect;
+   const diff = entry.after - entry.before;
+   document.getElementById("resultDetails").textContent = `Weekly score: ${fmt(entry.before)} → ${fmt(entry.after)} (${diff >= 0 ? "+" : ""}${fmt(diff)} points)`;
    resultPanel.classList.add("show");
 
    pointsEl.classList.add("rolling");
@@ -1076,7 +1431,9 @@ function confirmAndReveal() {
    const unlock = (id) => {
      if (!state.unlocked.includes(id)) {
        state.unlocked.push(id);
-       showToast("Achievement unlocked!");
+       state.mostAchievements = Math.max(state.mostAchievements || 0, state.unlocked.length);
+       const achievement = achievements.find(item => item.id === id);
+       if (achievement) showAchievementNotification(achievement);
      }
    };
    unlock("first");
@@ -1105,6 +1462,63 @@ function confirmAndReveal() {
      div.innerHTML = `<div class="medal">${a.icon}</div><div><strong>${a.name}</strong><span>${a.desc}</span></div><span style="margin-left:auto;font-size:11px">${unlocked ? "UNLOCKED" : "LOCKED"}</span>`;
      list.appendChild(div);
    });
+ }
+
+ function getDrawnDateKeys() {
+   // History preserves successful draw dates across week boundaries; drawDates covers the current week.
+   return [...new Set([
+     ...state.history.map(entry => entry.date).filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key || "")),
+     ...state.drawDates.filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key || ""))
+   ])].sort();
+ }
+
+ function getStreakStats() {
+   const dates = getDrawnDateKeys();
+   if (!dates.length) return { current: 0, longest: 0 };
+   const dayMs = 86400000;
+   const timeFor = key => Date.parse(`${key}T00:00:00Z`);
+   let longest = 1;
+   let run = 1;
+   for (let i = 1; i < dates.length; i++) {
+     if (timeFor(dates[i]) - timeFor(dates[i - 1]) === dayMs) run++;
+     else run = 1;
+     if (run > longest) longest = run;
+   }
+
+   // Until today ends, yesterday's streak remains current if today's draw has not happened yet.
+   const today = todayKey();
+   const yesterdayDate = new Date(`${today}T00:00:00Z`);
+   yesterdayDate.setUTCDate(yesterdayDate.getUTCDate() - 1);
+   const yesterday = `${yesterdayDate.getUTCFullYear()}-${String(yesterdayDate.getUTCMonth()+1).padStart(2,"0")}-${String(yesterdayDate.getUTCDate()).padStart(2,"0")}`;
+   let cursor = dates.includes(today) ? today : yesterday;
+   const dateSet = new Set(dates);
+   if (!dateSet.has(cursor)) return { current: 0, longest };
+   let current = 0;
+   while (dateSet.has(cursor)) {
+     current++;
+     const d = new Date(`${cursor}T00:00:00Z`);
+     d.setUTCDate(d.getUTCDate() - 1);
+     cursor = `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}-${String(d.getUTCDate()).padStart(2,"0")}`;
+   }
+   return { current, longest };
+ }
+
+ function renderLeaderboard() {
+   const weekly = document.getElementById("bestWeeklyScore");
+   if (!weekly) return;
+   ensureWeek();
+   const streaks = getStreakStats();
+   weekly.textContent = state.bestWeeklyScore === null ? "—" : `${fmt(state.bestWeeklyScore)} CP`;
+   document.getElementById("worstWeeklyScore").textContent = state.worstWeeklyScore == null ? "—" : `${fmt(state.worstWeeklyScore)} CP`;
+   document.getElementById("bestMonthlyScore").textContent = state.bestMonthlyScore === null ? "—" : `${fmt(state.bestMonthlyScore)} CP`;
+   document.getElementById("worstMonthlyScore").textContent = state.worstMonthlyScore == null ? "—" : `${fmt(state.worstMonthlyScore)} CP`;
+   document.getElementById("bestStreak").textContent = `${streaks.longest} ${streaks.longest === 1 ? "day" : "days"}`;
+ }
+
+ function renderThemeButton() {
+   const isLight = document.body.classList.contains("light-mode");
+   const button = document.getElementById("themeToggleBtn");
+   if (button) { button.textContent = isLight ? "Switch to dark" : "Switch to light"; button.setAttribute("aria-pressed", String(isLight)); }
  }
 
  function renderHistory() {
@@ -1141,11 +1555,26 @@ function confirmAndReveal() {
    }
  });
 
+ // Header brand always returns to the home screen.
+ const brandHome = document.getElementById("brandHome");
+ brandHome.addEventListener("click", () => go("homeScreen"));
+ brandHome.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go("homeScreen"); } });
+
+ // Theme preference is stored separately from game progress.
+ try { if (localStorage.getItem("carddleTheme") === "light") document.body.classList.add("light-mode"); } catch {}
+ renderThemeButton();
+ document.getElementById("themeToggleBtn").addEventListener("click", () => {
+   document.body.classList.toggle("light-mode");
+   const theme = document.body.classList.contains("light-mode") ? "light" : "dark";
+   try { localStorage.setItem("carddleTheme", theme); } catch {}
+   renderThemeButton();
+ });
+ document.getElementById("signInDraftBtn").addEventListener("click", () => showToast("Google / Gmail sign-in is a design draft; no account service is connected."));
+ document.getElementById("profileDraftBtn").addEventListener("click", () => showToast("Profile editing is a design draft and is not connected yet."));
+ document.getElementById("settingsResetBtn").addEventListener("click", () => { confirmModal.classList.add("active"); });
+
  /* Reset Confirmation Modal Logic */
  const confirmModal = document.getElementById("confirmModal");
- document.getElementById("resetBtn").addEventListener("click", () => {
-   confirmModal.classList.add("active");
- });
  document.getElementById("modalCancelBtn").addEventListener("click", () => {
    confirmModal.classList.remove("active");
  });
@@ -1155,7 +1584,7 @@ function confirmAndReveal() {
    save();
    renderHome();
    go("homeScreen");
-   showToast("Prototype data reset.");
+   showToast("Game data reset.");
  });
 
  /* Initial Load */
